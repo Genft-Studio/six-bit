@@ -18,6 +18,11 @@
     color: #eeeeee;
 }
 
+input.color {
+    width: 70px;
+    margin-right: 5px;
+}
+
 .row {
     height: 14px;
 }
