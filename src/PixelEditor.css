@@ -1,0 +1,44 @@
+*,
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#canvas {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.color {
+    color: #eeeeee;
+}
+
+.row {
+    height: 14px;
+}
+
+.cell {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+}
+
+.grid .cell {
+    border-top: 1px solid #aaa;
+    border-right: 1px solid #aaa;
+}
+
+.cell.filled {
+    background-color: #000000;
+}
+
+textarea {
+    width: 100%;
+    height: 400px;
+    font-size: 10px;
+}

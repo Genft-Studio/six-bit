@@ -1,3 +1,4 @@
+import "./PixelEditor.css"
 
 function PixelEditor() {
     return (
@@ -9,29 +10,29 @@ function PixelEditor() {
             {/*    </h1>*/}
             {/*</header>*/}
 
-            <div id="canvas" className="grid" onContextMenu="return false;">
+            <div id="canvas" className="grid" onContextMenu={() => {return false}}>
 
             </div>
-            <input id="c1" type="radio" name="color" value="1" checked />
-            <input className="color" id="color1" value="331a00" />
+            <input id="c1" type="radio" name="color" value="1" defaultChecked />
+            <input className="color" id="color1" defaultValue="331a00" />
 
             <input id="c2" type="radio" name="color" value="2" />
-            <input className="color" id="color2" value="663300" />
+            <input className="color" id="color2" defaultValue="663300" />
 
             <input id="c3" type="radio" name="color" value="3" />
-            <input className="color" id="color3" value="e67300" />
+            <input className="color" id="color3" defaultValue="e67300" />
 
             <input id="c4" type="radio" name="color" value="4" />
-            <input className="color" id="color4" value="ffb366" />
+            <input className="color" id="color4" defaultValue="ffb366" />
 
-            <input id="c5" type="radio" name="color" value="5" />
-            <input className="color" id="color5" value="ff9999" />
+            <input id="c5" type="radio" name="color" defaultValue="5" />
+            <input className="color" id="color5" defaultValue="ff9999" />
 
-            <input id="c6" type="radio" name="color" value="6" />
-            <input className="color" id="color6" value="00bb00" />
+            <input id="c6" type="radio" name="color" defaultValue="6" />
+            <input className="color" id="color6" defaultValue="00bb00" />
             <div>
-                <input id="iw" type="number" value="50" />
-                <input id="ih" type="number" value="50" />
+                <input id="iw" type="number" defaultValue="32" />
+                <input id="ih" type="number" defaultValue="32" />
                 <button id="reset">
                     ⊘ Reset
                 </button>
@@ -47,19 +48,19 @@ function PixelEditor() {
                 <button id="palette">
                     Randomize
                 </button>
-                <input name="grid" type="checkbox" id="grid" checked />
+                <input name="grid" type="checkbox" id="grid" defaultChecked />
                     <label htmlFor="grid">Grid</label>
                     <button id="png">
                         PNG
                     </button>
-                    <input id="pngPixelSize" type="number" value="10" />
+                    <input id="pngPixelSize" type="number" defaultValue="10" />
             </div>
             <div>
-                <textarea id="out" />
+                <textarea id="out" ></textarea>
             </div>
-            <img id="png-out" style="border:2px solid" />
+            <img id="png-out" style={{border:"2px solid"}} alt="" />
             <div id="license"
-                 style="margin: 20px; padding: 10px; border: 1px solid #ccc; font-size: 0.5em; color: #555">
+                 style={{margin: "20px", padding: "10px", border: "1px solid #ccc", fontSize: "0.5em", color: "#555"}}>
                 <h2>License</h2>
                 <p>Copyright © 2021 Ponderware Ltd.</p>
 
