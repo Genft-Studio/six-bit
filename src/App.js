@@ -4,6 +4,7 @@ import {
     Route,
     Link
 } from "react-router-dom";
+import PixelEditor from "./PixelEditor";
 // import logo from './logo.svg';
 import logo from './6bit-owl-wolf.png';
 import './App.css';
@@ -18,7 +19,10 @@ function App() {
                             <Link to="/">Home</Link>
                         </li>
                         <li>
-                            <Link to="/pixeleditor">Pixel Editor</Link>
+                            <Link to="/pixel-editor">Pixel Editor</Link>
+                        </li>
+                        <li>
+                            <Link to="/nft-maker">NFT Maker</Link>
                         </li>
                     </ul>
                 </nav>
@@ -26,8 +30,11 @@ function App() {
                 {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
                 <Switch>
-                    <Route path="/pixeleditor">
+                    <Route path="/pixel-editor">
                         <PixelEditor />
+                    </Route>
+                    <Route path="/nft-maker">
+                        <NftMaker />
                     </Route>
                     {/*<Route path="/users">*/}
                     {/*    <Users />*/}
@@ -52,17 +59,19 @@ function Home() {
   );
 }
 
-function PixelEditor() {
+
+function NftMaker() {
     return (
         <div className="App">
             <header className="App-header">
                 <h1>
-                    Pixel Editor<br />
+                    NFT Maker<br />
                     Coming Soon...
                 </h1>
             </header>
         </div>
     )
 }
+
 
 export default App;
