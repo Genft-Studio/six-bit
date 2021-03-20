@@ -1,6 +1,7 @@
 import "./PixelEditor.css"
 import {useState} from "react";
 import {useEffect} from "react";
+import { Users, BrowserStorage } from '@spacehq/users'
 
 function PixelEditor() {
     const [currentColor, setCurrentColor] = useState("1")
@@ -10,12 +11,14 @@ function PixelEditor() {
     const [color4, setColor4] = useState("ffb366")
     const [color5, setColor5] = useState("ff9999")
     const [color6, setColor6] = useState("00bb00")
-    const [iw, setIw] = useState("50")
-    const [ih, setIh] = useState("50")
+    const [iw, setIw] = useState("16")
+    const [ih, setIh] = useState("16")
     const [grid, setGrid] = useState(true)
     const [pngPixelSize, setPngPixelSize] = useState("10")
     const [out, setOut] = useState("")
-    const [a, setA] = useState(initArray(50, 50))
+    // const [a, setA] = useState(initArray(16, 16))
+    const initialState = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    const [a, setA] = useState(initialState)
     const [pngSrc, setPngSrc] = useState("")
 
     const handleColorSelect = (changeEvent) => {
@@ -32,7 +35,12 @@ function PixelEditor() {
                 row.push(0)
             }
         }
+        console.log("initArray: ", imageArray)
         return imageArray
+    }
+
+    function getActiveColorId() {
+        return parseInt(currentColor, 10);
     }
 
     function getColorCode(colorId) {
@@ -41,18 +49,18 @@ function PixelEditor() {
             return "#ffffff";
         }
         switch (colorId) {
-            case "1":
-                return color1
-            case "2":
-                return color2
-            case "3":
-                return color3
-            case "4":
-                return color4
-            case "5":
-                return color5
-            case "6":
-                return color6
+            case 1 || "1":
+                return "#" + color1
+            case 2 || "2":
+                return "#" + color2
+            case 3 || "3":
+                return "#" + color3
+            case 4 || "4":
+                return "#" + color4
+            case 5 || "5":
+                return "#" + color5
+            case 6 || "6":
+                return "#" + color6
             default:
                 return "#ffffff"
         }
@@ -99,14 +107,12 @@ function PixelEditor() {
             })
          */
         }
-        // var a = initArray(50, 50
-        // drawCanvas(a);
 
 
     const handleReset = () => {
         console.log("TODO")
-        const a = initArray(parseInt(iw, 10), parseInt(ih, 10));
-        // drawCanvas(a);   // TODO: enable this
+        const a = initArray(parseInt(iw, 10), parseInt(ih, 10))
+        drawCanvas(a)
     }
 
     const handlePrint = () => {
@@ -300,17 +306,17 @@ function PixelEditor() {
             if(id){
                 // return "#" + $("#color"+id).val();
                 switch (id) {
-                    case "1":
+                    case 1 || "1":
                         return "#" + color1
-                    case "2":
+                    case 2 || "2":
                         return "#" + color2
-                    case "3":
+                    case 3 || "3":
                         return "#" + color3
-                    case "4":
+                    case 4 || "4":
                         return "#" + color4
-                    case "5":
+                    case 5 || "5":
                         return "#" + color5
-                    case "6":
+                    case 6 || "6":
                         return "#" + color6
                 }
             }
@@ -336,14 +342,102 @@ function PixelEditor() {
 
     useEffect(() => {
         drawCanvas(a)
+        // console.log(a)
     }, [])
 
     return (
         <div className="App">
 
-            <div id="canvas" className={grid ? "grid": ""} onContextMenu={() => {return false}}>
 
+
+            <div id="canvas" className={grid ? "grid": ""} onContextMenu={() => {return false}}>
+                {/*_.forEach(a, (row, rowIndex) => {
+                    console.log("Row: ", rowIndex)
+                    return (
+                        <div className="row" key={"row + rowIndex"}>
+                            {_.forEach(row, (cell, cellIndex) => {
+                                console.log("Cell: ", cellIndex, ": ", cell)
+                                return (
+                                    <div className="cell" key={"cell" + cellIndex}>
+                                        {cell}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )
+                }) */}
+
+
+
+                {a.map((row, rowIndex) => {
+                    return (
+                        <div className="row" key={"row" + rowIndex}>
+                            {row.map((cell, cellIndex) => {
+                                return (
+                                    <div
+                                        className="cell"
+                                        key={"cell" + cellIndex}
+                                        style={{backgroundColor: getColorCode(cell)}}
+                                        onMouseDown={e => {
+                                            console.log("MouseDown, cell: ", cell)
+                                            let aChange = [...a]
+                                            if (a[rowIndex][cellIndex] != currentColor) {
+                                                aChange[rowIndex][cellIndex] = parseInt(currentColor, 10)
+                                            } else {
+                                                aChange[rowIndex][cellIndex] = 0
+                                            }
+                                            console.log("aChange", aChange)
+                                            setA(aChange)
+                                        }}
+                                    >
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    )
+                })}
+
+                {/* a.map((row, rowIndex) => {
+                    console.log("Row: ", rowIndex)
+                    return (
+                        <div className="row" key={"row" + rowIndex}>
+                            {row.map((cell, cellIndex) => {
+                                console.log("Cell: ", cellIndex)
+                                let color = getColorCode(cell)
+                                return (
+
+                                    <div className="cell" key={"cell" + cellIndex} style={{backgroundColor: color}} onMouseDown={e => {
+                                        console.log("MouseDown", e)
+                                        const colorId = getActiveColorId();
+                                        const colorCode = getColorCode(colorId)
+                                        let aChange = [...a]
+                                        // aChange[rowIndex] = []
+                                        if (e.which === 1 && a[rowIndex][cellIndex] != colorId) {
+                                            // a[rowIndex][cellIndex] = colorId;
+                                            aChange[rowIndex][cellIndex] = colorId
+                                            console.log("tmpA", aChange)
+                                            console.log(e)
+                                            // TODO: Set cell background color to colorCode
+                                            // $cell.css("background-color", colorCode);
+                                        } else {
+                                            // a[rowIndex][cellIndex] = 0
+                                            aChange[rowIndex][cellIndex] = 0
+                                            console.log(e)
+                                            // TODO: Set cell background color to emptyColor
+                                            // $cell.css("background-color", emptyColor);
+                                        }
+                                        setA(aChange)
+                                        // setA([...a, ...aChange])
+                                    }}  >
+                                    </div>
+                                )
+                            })}
+                            <br />
+                        </div>
+                    )
+                }) */}
             </div>
+
             <input id="c1" type="radio" name="color" value="1" checked={currentColor === "1"} onChange={handleColorSelect} />
             <input className="color" id="color1" value={color1} onChange={e => setColor1(e.target.value)} style={{backgroundColor: "#" + color1}} />
 
@@ -379,7 +473,7 @@ function PixelEditor() {
                 <button id="palette"onClick={handleRandomizePalette}>
                     Randomize
                 </button>
-                <input name="grid" type="checkbox" id="grid" defaultChecked value={grid} onChange={e => setGrid(e.target.value)} />
+                <input name="grid" type="checkbox" id="grid" checked={grid} onChange={e => {console.log("grid: ", e); setGrid(e.target.checked)}} />
                     <label htmlFor="grid">Grid</label>
                     <button id="png" onClick={handlePng}>
                         PNG
