@@ -53,5 +53,14 @@ const onmessage = function(salt, difficultyBits, dnaBits){
     postMessage(result);
 }
 
-let result = mine('Alfred the Owl', 16, 25)
-console.log(result)
+// let result = mine('$OWL', 16, 32)
+// console.log(result)
+
+
+// Test output
+// Diffculty: 16
+// Dna: 32
+// Salt: "$OWL"
+// Seed: 7c46f17faffa9673e56af2e35f6ee83e890f865f4e7abc885f2693d6eb9f054b
+// Hash: 00002b179867ac87a0e0860e007cd30a29aaac16db58a37b76ff86897e8483f1
+// DNA: 7e8483f1
