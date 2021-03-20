@@ -1,10 +1,10 @@
-const Gaspapon = artifacts.require('Gashapon')
+const Gashapon = artifacts.require('Gashapon')
 
 // const accounts = await web3.eth.getAccounts()
 
 contract('Gaspapon', async accounts => {
     it("should mint an unproven toy", async () => {
-        const instance = await Gaspapon.deployed()
+        const instance = await Gashapon.deployed()
 
         const nextId = await instance.getNumberOfToys()
         const id = await instance.mintToy("0xDEAD")
@@ -18,7 +18,7 @@ contract('Gaspapon', async accounts => {
     })
 
     it("should add DNA, name and difficulty", async () => {
-        const instance = await Gaspapon.deployed()
+        const instance = await Gashapon.deployed()
 
         const nextId = await instance.getNumberOfToys()
         const id = await instance.mintToy("0xDEAD")
