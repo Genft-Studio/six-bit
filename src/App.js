@@ -5,11 +5,44 @@ import {
     Link
 } from "react-router-dom";
 import PixelEditor from "./PixelEditor";
-// import logo from './logo.svg';
 import logo from './6bit-owl-wolf.png';
 import './App.css';
+import { Users, BrowserStorage } from '@spacehq/users'
+import {useState, useEffect} from "react";
+import _ from "lodash";
 
 function App() {
+    const [spaceUser, setSpaceUser] = useState({})
+
+    const initializeUser = async () => {
+        console.log("Initializing users from browser storage")
+        const storage = new BrowserStorage()
+        const onErrorCallback = (err, identity) => {
+            console.log("ERROR: Identity failed to auth using Space SDK: ", err.toString())
+        }
+        // users are automatically restored from stored identities
+        const users = await Users.withStorage(storage, {endpoint: "wss://auth-dev.space.storage"}, onErrorCallback)
+
+        const userList = users.list();
+        if(_.isEmpty(userList)) {
+            console.log("No identities found")
+            // TODO: Prompt to restore an identity as alternative to creating a new one?
+            const identity = await users.createIdentity()
+            console.log("Created new identity")
+            const user = await users.authenticate(identity)
+            console.log("Authenticated new user")
+            setSpaceUser(user)
+        } else {
+            console.log("Loaded first user from browser storage")
+            setSpaceUser(userList[0])
+        }
+    }
+
+    useEffect(() => {
+        initializeUser()
+    }, [])
+
+
     return (
         <Router>
             <div>

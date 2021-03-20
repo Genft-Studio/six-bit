@@ -3,7 +3,8 @@ import {useState} from "react";
 import {useEffect} from "react";
 import { Users, BrowserStorage } from '@spacehq/users'
 
-function PixelEditor() {
+function PixelEditor(props) {
+    const emptyColor = "#ffffff"
     const [currentColor, setCurrentColor] = useState("1")
     const [color1, setColor1] = useState("331a00")
     const [color2, setColor2] = useState("663300")
@@ -20,6 +21,7 @@ function PixelEditor() {
     const initialState = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
     const [a, setA] = useState(initialState)
     const [pngSrc, setPngSrc] = useState("")
+    const [mouseState, setMouseState] = useState(-1)
 
     const handleColorSelect = (changeEvent) => {
         console.log("Select color: ", changeEvent.target.value)
@@ -44,7 +46,7 @@ function PixelEditor() {
     }
 
     function getColorCode(colorId) {
-        console.log("Get Color Code: ", colorId)
+        // console.log("Get Color Code: ", colorId)
         if (!colorId || colorId === 0) {
             return "#ffffff";
         }
@@ -66,53 +68,52 @@ function PixelEditor() {
         }
     }
 
-    function drawCanvas(array) {
-        console.log("TODO: drawCanvas")
-        /*
-            $canvas.html('')
-            array.forEach(function(subArray, i) {
-                var $row = $("
-                    <div className='row'></div>
-                ").appendTo($canvas);
-                subArray.forEach(function (cell, j
-                ) {
-                    var color = getColorCode(cell)
-                    var $cell = $("<div class='cell' style='background-color:" + color + "'></div>").appendTo($row)
-                    $cell.on("mousedown", function(e) {
-                        var colorId = getActiveColorId();
-                        var colorCode = getColorCode(colorId)
-                        if (e.which === 1 && array[i][j] != colorId) {
-                            array[i][j] = colorId;
-                            $cell.css("background-color", colorCode);
-                        } else {
-                            array[i][j] = 0
-                            $cell.css("background-color", emptyColor);
-                        }
-                    });
-                    $cell.on("mouseenter", function(e) {
-                        var colorId = getActiveColorId();
-                        var colorCode = getColorCode(colorId);
-                        if (e.which === 1) {
-                            array[i][j] = colorId;
-                            $cell.css("background-color", colorCode)
-                        }
-                        if (e.which === 3) {
-                            array[i][j] = 0;
-                            $cell.css("background-color", emptyColor);
-                        }
-                        e.preventDefault();
-                        e.stopPropagation();
-                    })
+    /*
+function drawCanvas(array) {
+    console.log("TODO: drawCanvas")
+        $canvas.html('')
+        array.forEach(function(subArray, i) {
+            var $row = $("
+                <div className='row'></div>
+            ").appendTo($canvas);
+            subArray.forEach(function (cell, j
+            ) {
+                var color = getColorCode(cell)
+                var $cell = $("<div class='cell' style='background-color:" + color + "'></div>").appendTo($row)
+                $cell.on("mousedown", function(e) {
+                    var colorId = getActiveColorId();
+                    var colorCode = getColorCode(colorId)
+                    if (e.which === 1 && array[i][j] != colorId) {
+                        array[i][j] = colorId;
+                        $cell.css("background-color", colorCode);
+                    } else {
+                        array[i][j] = 0
+                        $cell.css("background-color", emptyColor);
+                    }
+                });
+                $cell.on("mouseenter", function(e) {
+                    var colorId = getActiveColorId();
+                    var colorCode = getColorCode(colorId);
+                    if (e.which === 1) {
+                        array[i][j] = colorId;
+                        $cell.css("background-color", colorCode)
+                    }
+                    if (e.which === 3) {
+                        array[i][j] = 0;
+                        $cell.css("background-color", emptyColor);
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
                 })
             })
-         */
+        })
         }
+     */
 
 
     const handleReset = () => {
-        console.log("TODO")
-        const a = initArray(parseInt(iw, 10), parseInt(ih, 10))
-        drawCanvas(a)
+        console.log("Reset pixel canvas")
+        setA(initArray(parseInt(iw, 10), parseInt(ih, 10)))
     }
 
     const handlePrint = () => {
@@ -123,7 +124,6 @@ function PixelEditor() {
         setOut(print)
     }
 
-
     const handleRead = () => {
         let str = out;
         let array = str.split("\n").map(function(row) {
@@ -133,23 +133,22 @@ function PixelEditor() {
         })
         let newA = array
         setA(newA)
-        drawCanvas(newA)
+        // drawCanvas(newA)
         console.log(newA)
     }
 
     const handleRedraw = () => {
-        drawCanvas(a)
+        // TODO: Remove Redraw button
+        // drawCanvas(a)
     }
 
     const handleRandomizePalette = () => {
         console.log("TODO: Randomize Palette")
         generateColorPalette()
-        drawCanvas(a)
+        // drawCanvas(a)
     }
 
     const handlePng = () => {
-        console.log("TODO: PNG")
-        // $("#png-out").prop("src", generatePNG());    // TODO: Implement this
         setPngSrc(generatePNG())
     }
 
@@ -303,22 +302,21 @@ function PixelEditor() {
         let canvas = document.createElement("canvas");
         const data = a;
         const colors = [0,1,2,3,4,5,6].map(function(id){
-            if(id){
-                // return "#" + $("#color"+id).val();
-                switch (id) {
-                    case 1 || "1":
-                        return "#" + color1
-                    case 2 || "2":
-                        return "#" + color2
-                    case 3 || "3":
-                        return "#" + color3
-                    case 4 || "4":
-                        return "#" + color4
-                    case 5 || "5":
-                        return "#" + color5
-                    case 6 || "6":
-                        return "#" + color6
-                }
+            switch (id) {
+                case 1 || "1":
+                    return "#" + color1
+                case 2 || "2":
+                    return "#" + color2
+                case 3 || "3":
+                    return "#" + color3
+                case 4 || "4":
+                    return "#" + color4
+                case 5 || "5":
+                    return "#" + color5
+                case 6 || "6":
+                    return "#" + color6
+                default:
+                    return emptyColor
             }
         })
 
@@ -339,36 +337,33 @@ function PixelEditor() {
         return canvas.toDataURL();
     }
 
+    const setCellColor = (row, col, color) => {
+        let aChange = [...a]
+        if (a[row][col] !== color) {
+            aChange[row][col] = color
+        } else {
+            aChange[row][col] = 0
+        }
+        setA(aChange)
+        // console.log("aChange", aChange)
+    }
 
     useEffect(() => {
-        drawCanvas(a)
-        // console.log(a)
+        // drawCanvas(a)
+        document.onmousedown=function(e){
+            setMouseState(e.button)
+            // console.log("Mouse Down: ", e.button)
+        }
+        document.onmouseup=function(e){
+            setMouseState(-1);
+            // console.log("Mouse Up")
+        }
     }, [])
 
     return (
         <div className="App">
 
-
-
             <div id="canvas" className={grid ? "grid": ""} onContextMenu={() => {return false}}>
-                {/*_.forEach(a, (row, rowIndex) => {
-                    console.log("Row: ", rowIndex)
-                    return (
-                        <div className="row" key={"row + rowIndex"}>
-                            {_.forEach(row, (cell, cellIndex) => {
-                                console.log("Cell: ", cellIndex, ": ", cell)
-                                return (
-                                    <div className="cell" key={"cell" + cellIndex}>
-                                        {cell}
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    )
-                }) */}
-
-
-
                 {a.map((row, rowIndex) => {
                     return (
                         <div className="row" key={"row" + rowIndex}>
@@ -379,15 +374,14 @@ function PixelEditor() {
                                         key={"cell" + cellIndex}
                                         style={{backgroundColor: getColorCode(cell)}}
                                         onMouseDown={e => {
-                                            console.log("MouseDown, cell: ", cell)
-                                            let aChange = [...a]
-                                            if (a[rowIndex][cellIndex] != currentColor) {
-                                                aChange[rowIndex][cellIndex] = parseInt(currentColor, 10)
-                                            } else {
-                                                aChange[rowIndex][cellIndex] = 0
+                                            setCellColor(rowIndex, cellIndex, parseInt(currentColor))
+                                        }}
+                                        onMouseEnter={e => {
+                                            if(mouseState === 0) {
+                                                setCellColor(rowIndex, cellIndex, parseInt(currentColor))
+                                            } else if(mouseState === 2) {
+                                                setCellColor(rowIndex, cellIndex, parseInt(emptyColor))
                                             }
-                                            console.log("aChange", aChange)
-                                            setA(aChange)
                                         }}
                                     >
                                     </div>
@@ -396,46 +390,6 @@ function PixelEditor() {
                         </div>
                     )
                 })}
-
-                {/* a.map((row, rowIndex) => {
-                    console.log("Row: ", rowIndex)
-                    return (
-                        <div className="row" key={"row" + rowIndex}>
-                            {row.map((cell, cellIndex) => {
-                                console.log("Cell: ", cellIndex)
-                                let color = getColorCode(cell)
-                                return (
-
-                                    <div className="cell" key={"cell" + cellIndex} style={{backgroundColor: color}} onMouseDown={e => {
-                                        console.log("MouseDown", e)
-                                        const colorId = getActiveColorId();
-                                        const colorCode = getColorCode(colorId)
-                                        let aChange = [...a]
-                                        // aChange[rowIndex] = []
-                                        if (e.which === 1 && a[rowIndex][cellIndex] != colorId) {
-                                            // a[rowIndex][cellIndex] = colorId;
-                                            aChange[rowIndex][cellIndex] = colorId
-                                            console.log("tmpA", aChange)
-                                            console.log(e)
-                                            // TODO: Set cell background color to colorCode
-                                            // $cell.css("background-color", colorCode);
-                                        } else {
-                                            // a[rowIndex][cellIndex] = 0
-                                            aChange[rowIndex][cellIndex] = 0
-                                            console.log(e)
-                                            // TODO: Set cell background color to emptyColor
-                                            // $cell.css("background-color", emptyColor);
-                                        }
-                                        setA(aChange)
-                                        // setA([...a, ...aChange])
-                                    }}  >
-                                    </div>
-                                )
-                            })}
-                            <br />
-                        </div>
-                    )
-                }) */}
             </div>
 
             <input id="c1" type="radio" name="color" value="1" checked={currentColor === "1"} onChange={handleColorSelect} />
