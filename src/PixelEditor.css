@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    text-align: left;
 }
 
 #canvas {
@@ -37,6 +38,7 @@ input.color {
     border-top: 1px solid #aaa;
     border-right: 1px solid #aaa;
 }
+
 
 .cell.filled {
     background-color: #000000;
