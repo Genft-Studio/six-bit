@@ -1,5 +1,5 @@
-const Migrations = artifacts.require("Migrations");
+const Gashapon = artifacts.require("Gashapon");
 
 module.exports = function (deployer) {
-  deployer.deploy(Migrations);
+  deployer.deploy(Gashapon, "0xEEEE");
 };
