@@ -8,6 +8,8 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
+    "@truffle/hdwallet-provider": "^1.2.4",
+    "dotenv": "^8.2.0",
     "lodash": "^4.17.21",
     "@truffle/hdwallet-provider": "^1.2.4",
     "bitwise-buffer": "^1.0.2",
@@ -19,7 +21,6 @@
     "streamify-string": "^1.0.1",
     "string-to-stream": "^3.0.1",
     "sha3": "^2.1.4",
-    "truffle": "^5.2.5",
     "web-vitals": "^1.1.1"
   },
   "scripts": {
@@ -47,6 +48,7 @@
     ]
   },
   "devDependencies": {
-    "solhint": "^3.3.4"
+    "solhint": "^3.3.4",
+    "truffle": "^5.2.5"
   }
 }
