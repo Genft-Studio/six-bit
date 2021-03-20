@@ -8,11 +8,16 @@ import PixelEditor from "./PixelEditor";
 import logo from './6bit-owl-wolf.png';
 import './App.css';
 import { Users, BrowserStorage } from '@spacehq/users'
-import {useState, useEffect} from "react";
+import {UserStorage} from "@spacehq/storage";
+import {useState, useEffect, createContext} from "react";
 import _ from "lodash";
+// import UserContext from "./UserContext";
+
+// const UserContext = createContext(null)
 
 function App() {
     const [spaceUser, setSpaceUser] = useState({})
+    const [spaceStorage, setSpaceStorage] = useState({})
 
     const initializeUser = async () => {
         console.log("Initializing users from browser storage")
@@ -21,21 +26,24 @@ function App() {
             console.log("ERROR: Identity failed to auth using Space SDK: ", err.toString())
         }
         // users are automatically restored from stored identities
-        const users = await Users.withStorage(storage, {endpoint: "wss://auth-dev.space.storage"}, onErrorCallback)
+        // const users = await Users.withStorage(storage, {endpoint: "wss://auth-dev.space.storage"}, onErrorCallback)
+        const users = await Users.withStorage(storage, {endpoint: "wss://auth.space.storage"}, onErrorCallback)
 
         const userList = users.list();
+        let user
         if(_.isEmpty(userList)) {
             console.log("No identities found")
             // TODO: Prompt to restore an identity as alternative to creating a new one?
             const identity = await users.createIdentity()
             console.log("Created new identity")
-            const user = await users.authenticate(identity)
+            user = await users.authenticate(identity)
             console.log("Authenticated new user")
-            setSpaceUser(user)
         } else {
             console.log("Loaded first user from browser storage")
-            setSpaceUser(userList[0])
+            user = userList[0];
         }
+        setSpaceUser(user)
+        setSpaceStorage(new UserStorage(user))
     }
 
     useEffect(() => {
@@ -44,40 +52,42 @@ function App() {
 
 
     return (
-        <Router>
-            <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/pixel-editor">Pixel Editor</Link>
-                        </li>
-                        <li>
-                            <Link to="/nft-maker">NFT Maker</Link>
-                        </li>
-                    </ul>
-                </nav>
+        // <UserContext.Provider value={spaceUser}>
+            <Router>
+                <div>
+                    <nav>
+                        <ul>
+                            <li>
+                                <Link to="/">Home</Link>
+                            </li>
+                            <li>
+                                <Link to="/pixel-editor">Pixel Editor</Link>
+                            </li>
+                            <li>
+                                <Link to="/nft-maker">NFT Maker</Link>
+                            </li>
+                        </ul>
+                    </nav>
 
-                {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-                <Switch>
-                    <Route path="/pixel-editor">
-                        <PixelEditor />
-                    </Route>
-                    <Route path="/nft-maker">
-                        <NftMaker />
-                    </Route>
-                    {/*<Route path="/users">*/}
-                    {/*    <Users />*/}
-                    {/*</Route>*/}
-                    <Route path="/">
-                        <Home />
-                    </Route>
-                </Switch>
-            </div>
-        </Router>
+                    {/* A <Switch> looks through its children <Route>s and
+                renders the first one that matches the current URL. */}
+                    <Switch>
+                        <Route path="/pixel-editor">
+                            <PixelEditor spaceUser={spaceUser} spaceStorage={spaceStorage} />
+                        </Route>
+                        <Route path="/nft-maker">
+                            <NftMaker />
+                        </Route>
+                        {/*<Route path="/users">*/}
+                        {/*    <Users />*/}
+                        {/*</Route>*/}
+                        <Route path="/">
+                            <Home />
+                        </Route>
+                    </Switch>
+                </div>
+            </Router>
+        // </UserContext.Provider>
     );
 }
 
