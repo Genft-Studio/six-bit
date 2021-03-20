@@ -1,10 +1,19 @@
 import "./PixelEditor.css"
-import {useState} from "react";
+import {Fragment, useState} from "react";
 import {useEffect} from "react";
 import { Users, BrowserStorage } from '@spacehq/users'
+// import UserContext from "./UserContext";
+import _ from "lodash";
+// import Readable from 'stream';
+import ReadableString from './ReadableString'
+import {Readable} from "stream";
+import stringToStream from "string-to-stream"
+import Streamify from "streamify-string"
 
 function PixelEditor(props) {
     const emptyColor = "#ffffff"
+    const bucketName = "gashapon";
+
     const [currentColor, setCurrentColor] = useState("1")
     const [color1, setColor1] = useState("331a00")
     const [color2, setColor2] = useState("663300")
@@ -22,9 +31,11 @@ function PixelEditor(props) {
     const [a, setA] = useState(initialState)
     const [pngSrc, setPngSrc] = useState("")
     const [mouseState, setMouseState] = useState(-1)
+    const [directoryList, setDirectoryList] = useState({ items: [] })
+    const [currentPath, setCurrentPath] = useState("")
 
     const handleColorSelect = (changeEvent) => {
-        console.log("Select color: ", changeEvent.target.value)
+        // console.log("Select color: ", changeEvent.target.value)
         setCurrentColor(changeEvent.target.value)
     }
 
@@ -70,7 +81,6 @@ function PixelEditor(props) {
 
     /*
 function drawCanvas(array) {
-    console.log("TODO: drawCanvas")
         $canvas.html('')
         array.forEach(function(subArray, i) {
             var $row = $("
@@ -116,10 +126,15 @@ function drawCanvas(array) {
         setA(initArray(parseInt(iw, 10), parseInt(ih, 10)))
     }
 
-    const handlePrint = () => {
+    const canvasToString = () => {
         const print = a.map(function(row, i) {
             return row.join(" ")
         }).join("\n")
+        return print
+    }
+
+    const handlePrint = () => {
+        const print = canvasToString()
         console.log(print)
         setOut(print)
     }
@@ -137,13 +152,14 @@ function drawCanvas(array) {
         console.log(newA)
     }
 
+    /*
     const handleRedraw = () => {
         // TODO: Remove Redraw button
         // drawCanvas(a)
     }
+     */
 
     const handleRandomizePalette = () => {
-        console.log("TODO: Randomize Palette")
         generateColorPalette()
         // drawCanvas(a)
     }
@@ -348,6 +364,111 @@ function drawCanvas(array) {
         // console.log("aChange", aChange)
     }
 
+    const handleOpenFile = async (file) => {
+        // read content of an uploaded file
+        console.log("Request to open file")
+        // const fileResponse = await props.spaceStorage.openFile({ bucket: bucketName, path: '/file.txt'});
+        const fileResponse = await props.spaceStorage.openFile({ bucket: bucketName, path: file.path});
+        const fileContent = await fileResponse.consumeStream();
+        console.log("fileContent: ", fileContent)
+    }
+
+    const handleSaveFile = async () => {
+        console.log("Request to save file")
+        const dataString = canvasToString()
+        console.log("dataString", dataString)
+
+
+        // const dataBuffer = stringToStream(dataString)
+
+        // const dataBuffer = new ReadableString('hello - this is only a test');
+
+        // const dataBuffer = new Readable()
+        // dataBuffer.push("Readable buffer test")
+        // dataBuffer.push(null)
+
+        const dataBuffer = Streamify(dataString)
+
+
+        console.log("dataBuffer", dataBuffer)
+
+        const uploadResponse = await props.spaceStorage.addItems({
+            bucket: bucketName,
+            files: [
+                {
+                    path: 'file.txt',
+                    content: dataBuffer,
+                    mimeType: 'plain/text'
+                }
+            ],
+        });
+        uploadResponse.once('done', (data) => {
+            const summary = data
+            console.log("File upload complete", summary)
+            // returns a summary of all files and their upload status
+        });
+
+        uploadResponse.on('data', (data) => {
+            const status = data
+            // update event on how each file is uploaded
+        });
+
+        uploadResponse.on('error', (err) => {
+            const status = err
+            // error event if a file upload fails
+            // status.error contains the error
+        });
+
+        // response.once('done', (data: AddItemsEventData) => {
+        //     const summary = data as AddItemsResultSummary;
+        //     // returns a summary of all files and their upload status
+        // });
+
+
+
+        /*
+        // const dataBuffer = Readable.from('hello - this is only a test').pipe(process.stdout);
+        const dataBuffer = new ReadableString('hello - this is only a test');
+        console.log("dataBuffer", dataBuffer)
+        const response = await props.spaceStorage.addItems({
+            bucket: bucketName,
+            files: [
+                {
+                    // path: currentPath + "/pixel-art-000000.txt",
+                    path: "test.txt",
+                    // content: dataString,
+                    content: dataBuffer,
+                    // content: dataBuffer.pipe(process.stdout),
+                    mimeType: 'plain/text'
+                }
+            ]
+        })
+
+
+        response.on('data', (data) => {
+            const status = data;
+            // update event on how each file is uploaded
+            console.log("INFO File upload in progress...")
+        });
+
+        response.on('error', (err) => {
+            const status = err;
+            // error event if a file upload fails
+            // status.error contains the error
+            // console.log("ERROR Uploading file to Fleek bucket: ", status.error)
+            console.log("ERROR Uploading file to Fleek bucket")
+        });
+
+        response.once('done', (data) => {
+            const summary = data;
+            // returns a summary of all files and their upload status
+            console.log("SUCCESS File uploaded to Fleek bucket")
+            // readStorage()    // TODO: Re-enable this
+        });
+
+         */
+    }
+
     useEffect(() => {
         // drawCanvas(a)
         document.onmousedown=function(e){
@@ -359,6 +480,58 @@ function drawCanvas(array) {
             // console.log("Mouse Up")
         }
     }, [])
+
+    // spaceStorage structure:
+    //
+    // bucket: gashapon
+    // path:   /<collectionName>/<imageName>
+
+    const readStorage = async () => {
+        const ls = await props.spaceStorage.listDirectory({ bucket: bucketName, path: '', recursive: true })
+        setDirectoryList(ls)
+        console.log("ls: ", ls)
+        if(_.isEmpty(currentPath) && !_.isEmpty(ls.items)) {
+            console.log("currentPath not set, setting it to: ", ls.items[0].path)
+            setCurrentPath(ls.items[0].path)
+        }
+        return ls
+    }
+
+    const createFolder = async (folderName) => {
+        console.log("Creating Folder: ", folderName)
+        const mkdir = await props.spaceStorage.createFolder({ bucket: bucketName, path: folderName })
+        console.log("mkdir: ", mkdir)
+        setCurrentPath("/" + folderName)
+        await readStorage()
+    }
+
+    useEffect(() => {
+        console.log("spaceStorage updated")
+        if(!_.isEmpty(props.spaceStorage)) {
+            readStorage().then(ls => {
+                // Read spaceStorage from Fleek
+                // console.log("ls", ls)
+                if(_.isEmpty(ls.items)) {
+                    console.log("SpaceStorage is empty, creating initial folder")
+                    createFolder("My Art")
+                }
+            })
+        }
+    }, [props.spaceStorage])
+
+    useEffect(() => {
+        console.log("directoryList: ", directoryList)
+    }, [directoryList])
+
+    /*
+    useEffect(() => {
+        if(!_.isEmpty(props.spaceStorage) && !_.isEmpty(directoryList) && _.isEmpty(directoryList.items)) {
+            // Directory list has been retrieved and there are no items
+            // Create an initial working directory
+            // createFolder("My Art")
+        }
+    }, [directoryList])
+     */
 
     return (
         <div className="App">
@@ -421,18 +594,68 @@ function drawCanvas(array) {
                 <button id="read" onClick={handleRead}>
                     ↑ Read
                 </button>
-                <button id="redraw" onClick={handleRedraw}>
-                    ↺ Redraw
-                </button>
+                {/*<button id="redraw" onClick={handleRedraw}>*/}
+                {/*    ↺ Redraw*/}
+                {/*</button>*/}
                 <button id="palette"onClick={handleRandomizePalette}>
-                    Randomize
+                    Randomize Palette
                 </button>
                 <input name="grid" type="checkbox" id="grid" checked={grid} onChange={e => {console.log("grid: ", e); setGrid(e.target.checked)}} />
-                    <label htmlFor="grid">Grid</label>
-                    <button id="png" onClick={handlePng}>
-                        PNG
+                <label htmlFor="grid">Grid</label>
+                <button id="png" onClick={handlePng}>
+                    PNG
+                </button>
+                <input id="pngPixelSize" type="number" value={pngPixelSize} onChange={e => setPngPixelSize(e.target.value)} />
+
+                {!_.isEmpty(currentPath) && (
+                    <button id="saveFile" onClick={handleSaveFile}>
+                        Save File
                     </button>
-                    <input id="pngPixelSize" type="number" value={pngPixelSize} onChange={e => setPngPixelSize(e.target.value)} />
+                )}
+            </div>
+            {/*
+            <div>
+                Collection Name:
+                <input id="collectionName" />
+                <button id="newCollection">
+                    New Collection
+                </button>
+            </div>
+            */}
+            <div className="file-directory">
+                {_.isEmpty(props.spaceStorage) && (
+                    <p>Loading user data...</p>
+                )}
+                {_.isEmpty(directoryList.items) && (
+                    <p>Initializing storage bucket...</p>
+                )}
+                {!_.isEmpty(directoryList.items) && (
+                    <>
+                        <p>Directories:</p>
+                        <ul>
+                            {directoryList.items.map((item, index) => {
+                                return (
+                                    <Fragment key={item.path}>
+                                        <li className={(item.path === currentPath) ? "current" : ""}>
+                                            {item.name}
+                                        </li>
+                                        {item.items.map((file, fileIndex) => {
+                                            return (
+                                                <li key={file.path} onClick={() => {
+                                                    if(!file.isDir) {
+                                                        handleOpenFile(file)
+                                                    }
+                                                }}>
+                                                    |-- {file.name}
+                                                </li>
+                                            )
+                                        })}
+                                    </Fragment>
+                                )
+                            })}
+                        </ul>
+                    </>
+                )}
             </div>
             <div>
                 <textarea id="out" value={out} onChange={e => setOut(e.target.value)} />
