@@ -6,14 +6,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 
-
 contract Gashapon is ERC721, Ownable {
     using SafeMath for uint256;
     using Strings for string;
 
     string constant UNPROVEN_NAME = "<unproven>";
 
-    bytes32 public difficulty1Target;
+    uint256 public difficulty1Target;
     uint256 public totalDifficulty;
 
     struct Toy {
@@ -28,11 +27,14 @@ contract Gashapon is ERC721, Ownable {
 
     Toy[] public toys;
 
-    constructor(bytes32 _difficulty1Target) public ERC721("Gashapon", "TOY")
+    constructor(
+        string memory _tokenName,
+        string memory _tokenSymbol,
+        uint8 _minimumDifficultyBits
+    ) public ERC721(_tokenName, _tokenSymbol)
     {
         // TODO set the starting price, the price escalation factor, artist commission
-        difficulty1Target = _difficulty1Target;
-        totalDifficulty = 0;
+        difficulty1Target = 2 ** (256 - uint256(_minimumDifficultyBits)) - 1;
     }
 
     function mintToy(bytes32 _securityHash) payable public returns (uint256) {
@@ -56,8 +58,8 @@ contract Gashapon is ERC721, Ownable {
 
     function revealRarityProof(
         uint256 _id,
-        uint256 _dna,
-        bytes32 _proofOfWork,
+        uint256 _seed,
+        uint256 _dna, // TODO extract from the proofHash
         string memory _name,
         string memory _tokenUri
     ) public {
@@ -70,12 +72,14 @@ contract Gashapon is ERC721, Ownable {
         require(!nameExists(_name), 'name must be unique');
 
         // Check the securityHash
-        bytes32 securityHash = keccak256(abi.encodePacked(msg.sender, _proofOfWork));
+        bytes32 securityHash = keccak256(abi.encode(msg.sender, _seed));
         require(securityHash == idToSecurityHash[_id], "proof doesn't match the security hash");
 
+        // TODO This might be subject to front-running
         // Check for minimum work
-        bytes32 work = keccak256(abi.encodePacked(_dna, _proofOfWork));
-        require(work > difficulty1Target, "not enough work was applied");
+        // FIXME The hash doesn't match the hash generated in the miner
+        bytes32 work = keccak256(abi.encode(symbol(), _seed));
+//        require(uint256(work) <= difficulty1Target);
 
         uint256 difficulty = uint256(difficulty1Target) / uint256(work);
 

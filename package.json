@@ -3,18 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@spacehq/sdk": "0.0.30",
     "@openzeppelin/contracts": "^3.4.1",
+    "@spacehq/sdk": "0.0.30",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
     "@truffle/hdwallet-provider": "^1.2.4",
     "bitwise-buffer": "^1.0.2",
     "dotenv": "^8.2.0",
+    "ethers": "^5.0.32",
     "lodash": "^4.17.21",
-    "@truffle/hdwallet-provider": "^1.2.4",
-    "bitwise-buffer": "^1.0.2",
-    "dotenv": "^8.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -22,7 +20,6 @@
     "sha3": "^2.1.4",
     "streamify-string": "^1.0.1",
     "string-to-stream": "^3.0.1",
-    "sha3": "^2.1.4",
     "web-vitals": "^1.1.1"
   },
   "scripts": {

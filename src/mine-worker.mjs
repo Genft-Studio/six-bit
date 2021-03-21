@@ -1,9 +1,9 @@
-import {Keccak} from "sha3"
+import Ethers from "ethers"
 import pkg from 'bitwise-buffer';
 const { xor, and: bitwiseAnd, or, nor, not, lshift, rshift } = pkg;
 
 function randomBuffer(){
-    var x = new Array(32);
+    var x = new Uint8Array(32);
     for(var i = 0; i < 32; i++){
         x[i] = Math.floor(Math.random() * 256);
     }
@@ -33,10 +33,9 @@ export default function mine(salt, difficultyBits, dnaBits) {
     var startTime = Date.now();
     while (true){
         guess = randomBuffer();
-        let h = new Keccak(256);
-        h.update(salt)
-        h.update(guess)
-        hash = h.digest()
+
+        const hashHex = Ethers.utils.solidityKeccak256(['string', 'uint256'], [salt, guess])
+        hash = Buffer.from(hashHex.slice(2), 'hex')
         if (isZero(bitwiseAnd(hash, difficultyMask))) {
             break
         }
@@ -61,6 +60,6 @@ const onmessage = function(salt, difficultyBits, dnaBits){
 // Diffculty: 16
 // Dna: 32
 // Salt: "$OWL"
-// Seed: 7c46f17faffa9673e56af2e35f6ee83e890f865f4e7abc885f2693d6eb9f054b
-// Hash: 00002b179867ac87a0e0860e007cd30a29aaac16db58a37b76ff86897e8483f1
-// DNA: 7e8483f1
+// Seed: 8a0e365a30cf850dd92f5e82c017b420bdcc9569ba4e12f3bde23567ba5077a1
+// Hash: 0000551268ed3bd170f482396cbd06f9b5122517d7812c8d2561a80106da6873
+// DNA: 06da6873
