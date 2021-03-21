@@ -62,7 +62,7 @@ function App() {
                             <Link to="/pixel-editor">Pixel Editor</Link>
                         </li>
                         <li>
-                            <Link to="/nft-maker">NFT Maker</Link>
+                            <Link to="/nft-factory">NFT Factory</Link>
                         </li>
                         <li>
                             <Link to="/nft-minter">NFT Minter</Link>
@@ -74,7 +74,7 @@ function App() {
                     <Route path="/pixel-editor">
                         <PixelEditor spaceUser={spaceUser} spaceStorage={spaceStorage} />
                     </Route>
-                    <Route path="/nft-maker">
+                    <Route path="/nft-factory">
                         <NftMaker />
                     </Route>
                     <Route path="/nft-minter">

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import {useState, useEffect} from "react";
+import {Fragment, useState, useEffect} from "react";
 import { ethers } from "ethers";
 import gashaponFactoryAbi from "./abis/GashaponFactory.json";
 
@@ -55,39 +55,41 @@ function NftMinter() {
                 <header className="App-header">
                     <h1 className="text-center">NFT Minter</h1>
                     <button onClick={handleConnectEthereum}>
-                        Connect to Ethereum
+                        Connect Wallet
                     </button>
                 </header>
             )}
             {!_.isNull(signer) && (
                 <>
                     <h1 className="text-center">NFT Minter</h1>
-                    {_.isNull(collectionAddress) && (
-                        <>
-                            NFT Collection Contract Address:
-                            <input name="collectionAddressInput" />
-                        </>
-                    )}
+                    <div className="nft-minter-detail text-center">
+                        {_.isNull(collectionAddress) && (
+                            <>
+                                NFT Collection Contract Address:
+                                <input name="collectionAddressInput" />
+                            </>
+                        )}
 
-                    {!_.isNull(collectionAddress) && (
-                        <>
-                            Collection name: {collectionData.name}<br />
-                            Symbol: {collectionData.symbol}<br />
-                            Avg Difficulty: {collectionData.averageDifficulty}<br />
-                            Next Price: {collectionData.nextPrice}<br />
+                        {!_.isNull(collectionAddress) && (
+                            <>
+                                Collection name: {collectionData.name}<br />
+                                Symbol: {collectionData.symbol}<br />
+                                Avg Difficulty: {collectionData.averageDifficulty}<br />
+                                Next Price: {collectionData.nextPrice}<br />
 
-                            <button >
-                                Search for NFTs
-                            </button><br />
+                                <button >
+                                    Search for NFTs
+                                </button><br />
 
-                            NFT Found!
+                                NFT Found!
 
-                            <button >
-                                Mint NFT
-                            </button>
-                        </>
-                    )}
+                                <button >
+                                    Mint NFT
+                                </button>
+                            </>
+                        )}
 
+                    </div>
                 </>
             )}
         </div>

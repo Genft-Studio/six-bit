@@ -125,15 +125,15 @@ function NftMaker() {
 
             {_.isNull(signer) && (
                 <header className="App-header">
-                    <h1 className="text-center">NFT Maker</h1>
+                    <h1 className="text-center">NFT Factory</h1>
                     <button onClick={handleConnectEthereum}>
-                        Connect to Ethereum
+                        Connect Wallet
                     </button>
                 </header>
             )}
             {!_.isNull(signer) && (
                 <>
-                    <h1 className="text-center">NFT Maker</h1>
+                    <h1 className="text-center">NFT Factory</h1>
                     <div className="file-directory">
                         {!_.isEmpty(savedArt) && (
                             <>
