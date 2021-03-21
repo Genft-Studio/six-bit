@@ -34,3 +34,6 @@ If you own a sick MoonOwl, YOU can cash in on Raribles, or SuperRare, or maybe w
 On the other hand, if the MoonOwl that you got isn't one of crème de la crème that fetch top dollar, you can still show off your one-of-a-kind, cute little moon owl...or you can burn it and get a percentage of the last price that was last paid for a MoonOwl from the vending machine. So say you bought yours for .001 Ether and a few hundred have been sold since then. Maybe the last one that sold went for 0.1 Ether. You can choose to burn your MoonOwl and collect 0.09 ether, netting a 90x profit!
 
 As new MoonOwls are minted, the price goes up. As MoonOwls are burned, the price goes down.
+
+### Revenue Share
+Minting charges are split between reserves to pay out for burned NFTs and the owner/artist. The percentage are set when the vending machine contract is set up.
