@@ -621,10 +621,10 @@ function PixelEditor(props) {
                 <button id="print" onClick={handlePrint}>
                     ↓ Print
                 </button>
+                */}
                 <button id="read" onClick={handleRead}>
                     ↑ Read
                 </button>
-                */}
                 {/*
                 <button id="png" onClick={handlePng}>
                     PNG
@@ -698,11 +698,9 @@ function PixelEditor(props) {
                     </>
                 )}
             </div>
-            {/*
             <div>
                 <textarea id="out" value={out} onChange={e => setOut(e.target.value)} />
             </div>
-            */}
             {/*<img id="png-out" style={{border:"2px solid"}} alt="" src={pngSrc} />*/}
             <div id="license"
                  style={{margin: "20px", padding: "10px", border: "1px solid #ccc", fontSize: "0.5em", color: "#555"}}>
