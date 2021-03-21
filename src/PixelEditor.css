@@ -31,7 +31,7 @@ input.color {
     color: transparent;
 }
 
-input[type=number] {
+.pixel-editor input[type=number] {
     width: 80px;
 }
 

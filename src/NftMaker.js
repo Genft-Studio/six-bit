@@ -4,12 +4,15 @@ import {NFTStorage} from "nft.storage";
 import { ethers } from "ethers";
 
 function NftMaker() {
+    const gashaponAddress = ""  // TODO: Fill this in!
+    const gashaponAbi = []  // TODO: Fill this in!
     const localStorageKey = "saved-art"
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
     const [savedArt, setSavedArt] = useState([])
     const [nftStorageClient, setNftStorageClient] = useState(null)
     const [provider, setProvider] = useState(null)
     const [signer, setSigner] = useState(null)
+    const [gashaponContract, setGashaponContract] = useState(null)
 
     const handleOpenFile = (cid) => {
         console.log("Request to open file: ", cid)
@@ -33,9 +36,20 @@ function NftMaker() {
             console.log("blockNumber:", blockNumber)
             const myAddress = await newSigner.getAddress()
             console.log("myAddress:", myAddress)
+
+            // Setup Gashapon contract model
+            // const contract = new ethers.Contract(gashaponAddress, gashaponAbi, newProvider)  // TODO: Enable this
         } catch (e) {
             console.log("ERROR: Connecting to Ethereum wallet: ", e.toString())
         }
+    }
+
+    const handleLaunchCollection = async () => {
+        console.log("Request to launch collection")
+
+        // TODO: Store art assets and metadata on IPFS using nft.storage
+
+        // TODO: Initiate transaction to Gashapon Factory to create a new Gashapon contract
     }
 
     // Run once after page fully loads
@@ -89,7 +103,18 @@ function NftMaker() {
                                 <h3>Name Collection:</h3>
                                 <input name="collection" />
 
-                                <button >
+                                <h3>Token Symbol:</h3>
+                                <input name="tokenSymbol" />
+
+                                <h3>Minimum Difficulty Bits:</h3>
+                                <input name="minimumDifficultyBits" type="number" />
+
+                                <h3>Dna Bit Length:</h3>
+                                <input name="dnaBitLength" type="number" />
+
+                                <br />
+
+                                <button onClick={handleLaunchCollection}>
                                     Launch NFT Collection
                                 </button>
 

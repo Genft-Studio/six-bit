@@ -13,6 +13,7 @@ import {useState, useEffect, createContext} from "react";
 import _ from "lodash";
 // import TestSpaceSDK from "./TestSpaceSDK";
 import NftMaker from "./NftMaker";
+import NftMinter from "./NftMinter";
 
 function App() {
     const [spaceUser, setSpaceUser] = useState({})
@@ -64,6 +65,9 @@ function App() {
                         <li>
                             <Link to="/nft-maker">NFT Maker</Link>
                         </li>
+                        <li>
+                            <Link to="/nft-minter">NFT Minter</Link>
+                        </li>
                         {/*<li>*/}
                         {/*    <Link to="/test">TEST</Link>*/}
                         {/*</li>*/}
@@ -76,6 +80,9 @@ function App() {
                     </Route>
                     <Route path="/nft-maker">
                         <NftMaker />
+                    </Route>
+                    <Route path="/nft-minter">
+                        <NftMinter />
                     </Route>
                     {/*<Route path="/test">*/}
                     {/*    <TestSpaceSDK />*/}
