@@ -12,6 +12,8 @@ contract GashaponFactory {
     event GashaponCreated(address indexed _address);
     // event ChildCreated(address childAddress, uint data);
 
+    // TODO: Add field for IPFS path to data files
+
     function createChild(
 //        string memory _tokenName,
 //        string memory _tokenSymbol,

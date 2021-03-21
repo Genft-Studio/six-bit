@@ -2,32 +2,50 @@ import _ from "lodash";
 import {useState, useEffect} from "react";
 import {NFTStorage} from "nft.storage";
 import { ethers } from "ethers";
+import gashaponFactoryAbi from "./abis/GashaponFactory.json"
+
+// TODO: Keep GashaponFactory.json up to date, copy from build/contracts/...
 
 function NftMaker() {
-    const gashaponAddress = ""  // TODO: Fill this in!
-    const gashaponAbi = []  // TODO: Fill this in!
+    const gashaponFactoryAddress = ""  // TODO: Fill this in!
     const localStorageKey = "saved-art"
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
     const [savedArt, setSavedArt] = useState([])
     const [nftStorageClient, setNftStorageClient] = useState(null)
     const [provider, setProvider] = useState(null)
     const [signer, setSigner] = useState(null)
-    const [gashaponContract, setGashaponContract] = useState(null)
+    const [gashaponFactoryContract, setGashaponFactoryContract] = useState(null)
+    const [selectedArt, setSelectedArt] = useState([])
+    const [launchStatus, setLaunchStatus] = useState("")
+    const [collectionCid, setCollectionCid] = useState(null)
 
-    const handleOpenFile = (cid) => {
-        console.log("Request to open file: ", cid)
-        // TODO: ?
+    const handleToggleArt = (e, index) => {
+        console.log("Request to toggle art: ", e.target.checked, index)
+        const art = savedArt[index]
+        console.log("art: ", art)
+        let selectedArtTmp
+        if(e.target.checked) {
+            selectedArtTmp = _.uniq([index, ...selectedArt])
+            console.log("selectedArtTmp", selectedArtTmp)
+        } else {
+            selectedArtTmp = [...selectedArt]
+            _.remove(selectedArtTmp, (n) => {return n == index})
+            console.log("selectedArtTmp", selectedArtTmp)
+        }
+        setSelectedArt(selectedArtTmp)
     }
 
     const handleConnectEthereum = async () => {
         console.log("Request to connect to Ethereum")
 
+        let newProvider
+        let newSigner
         try {
             await window.ethereum.enable()
-            const newProvider = new ethers.providers.Web3Provider(window.ethereum);
+            newProvider = new ethers.providers.Web3Provider(window.ethereum);
             console.log("provider:", newProvider)
             setProvider(newProvider)
-            const newSigner = newProvider.getSigner();
+            newSigner = newProvider.getSigner();
             console.log("signer:", newSigner)
             setSigner(newSigner)
 
@@ -36,20 +54,57 @@ function NftMaker() {
             console.log("blockNumber:", blockNumber)
             const myAddress = await newSigner.getAddress()
             console.log("myAddress:", myAddress)
-
-            // Setup Gashapon contract model
-            // const contract = new ethers.Contract(gashaponAddress, gashaponAbi, newProvider)  // TODO: Enable this
         } catch (e) {
             console.log("ERROR: Connecting to Ethereum wallet: ", e.toString())
+            return
+        }
+
+        console.log("abi", gashaponFactoryAbi)
+
+        try {
+            // Setup Gashapon Factory contract model
+            // TODO: Enable/test this with a deployed contract:
+            // TODO: Note: gashaponFactoryAbi should maybe be gashaponFactoryAbi.abi here, but that
+            //       causes errors at the moment (pre-contract deployment)
+            const contract = new ethers.Contract(gashaponFactoryAddress, gashaponFactoryAbi, newProvider)
+            setGashaponFactoryContract(contract)
+            contract.connect(newSigner)
+        } catch (e) {
+            console.log("ERROR: Using GashaponFactory contract: ", e.toString())
+            return
         }
     }
 
     const handleLaunchCollection = async () => {
         console.log("Request to launch collection")
+        setLaunchStatus("uploading")
+        let directoryData = []
+        selectedArt.map((index) => {
+            console.log("index", index)
+            directoryData.push(new File([savedArt[index].data], "data/"+index+".txt"))
+            directoryData.push(new File([savedArt[index].png], "png/"+index+".png"))
+        })
 
-        // TODO: Store art assets and metadata on IPFS using nft.storage
+        let cid
+        try {
+            cid = await nftStorageClient.storeDirectory(directoryData)
+            console.log(cid)
+            console.log("Assets stored at: " + ipfsGatewayUrl(cid))
+        } catch (e) {
+            console.log("ERROR: Problem uploading to nft.storage: ", e.toString())
+            setLaunchStatus("error")
+            return
+        }
+
+        setLaunchStatus("upload-complete")
+        setCollectionCid(cid)
 
         // TODO: Initiate transaction to Gashapon Factory to create a new Gashapon contract
+        // TODO: Include IPFS cid for collection of assets
+    }
+
+    const ipfsGatewayUrl = (cid) => {
+        return 'https://' + cid + '.ipfs.dweb.link/'
     }
 
     // Run once after page fully loads
@@ -69,12 +124,12 @@ function NftMaker() {
         <div className="App nft-maker">
 
             {_.isNull(signer) && (
-            <header className="App-header">
-                <h1 className="text-center">NFT Maker</h1>
-                <button onClick={handleConnectEthereum}>
-                    Connect to Ethereum
-                </button>
-            </header>
+                <header className="App-header">
+                    <h1 className="text-center">NFT Maker</h1>
+                    <button onClick={handleConnectEthereum}>
+                        Connect to Ethereum
+                    </button>
+                </header>
             )}
             {!_.isNull(signer) && (
                 <>
@@ -88,8 +143,8 @@ function NftMaker() {
                                     {savedArt.map((art, index) => {
                                         const cid = art.cid
                                         return (
-                                            <li key={index + cid} onClick={() => {handleOpenFile(cid)}}>
-                                                <input type="checkbox" name={cid} id={cid} />
+                                            <li key={index + cid}>
+                                                <input type="checkbox" name={cid} id={cid} onChange={e => handleToggleArt(e, index)} />
                                                 <label htmlFor={cid}>
                                                     {/*{cid.substring(0,23)}.....{cid.substring(cid.length-23, cid.length)}<br />*/}
                                                     <img src={art.png} alt="" width="50px" />
@@ -117,7 +172,18 @@ function NftMaker() {
                                 <button onClick={handleLaunchCollection}>
                                     Launch NFT Collection
                                 </button>
-
+                                {launchStatus === "uploading" && (
+                                    <p>Storing art assets on IPFS...</p>
+                                )}
+                                {launchStatus === "upload-complete" && (
+                                    <p>Initiating Ethereum transaction...</p>
+                                )}
+                                {launchStatus === "error" && (
+                                    <p>ERROR</p>
+                                )}
+                                {!_.isNull(collectionCid) && (
+                                    <a href={ipfsGatewayUrl(collectionCid)} target="_blank">IPFS Archive</a>
+                                )}
                             </>
                         )}
 
