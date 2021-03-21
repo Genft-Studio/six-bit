@@ -11,9 +11,7 @@ import { Users, BrowserStorage } from '@spacehq/users'
 import {UserStorage} from "@spacehq/storage";
 import {useState, useEffect, createContext} from "react";
 import _ from "lodash";
-// import UserContext from "./UserContext";
-
-// const UserContext = createContext(null)
+import TestSpaceSDK from "./TestSpaceSDK";
 
 function App() {
     const [spaceUser, setSpaceUser] = useState({})
@@ -52,42 +50,41 @@ function App() {
 
 
     return (
-        // <UserContext.Provider value={spaceUser}>
-            <Router>
-                <div>
-                    <nav>
-                        <ul>
-                            <li>
-                                <Link to="/">Home</Link>
-                            </li>
-                            <li>
-                                <Link to="/pixel-editor">Pixel Editor</Link>
-                            </li>
-                            <li>
-                                <Link to="/nft-maker">NFT Maker</Link>
-                            </li>
-                        </ul>
-                    </nav>
+        <Router>
+            <div>
+                <nav>
+                    <ul>
+                        <li>
+                            <Link to="/">Home</Link>
+                        </li>
+                        <li>
+                            <Link to="/pixel-editor">Pixel Editor</Link>
+                        </li>
+                        <li>
+                            <Link to="/nft-maker">NFT Maker</Link>
+                        </li>
+                        <li>
+                            <Link to="/test">TEST</Link>
+                        </li>
+                    </ul>
+                </nav>
 
-                    {/* A <Switch> looks through its children <Route>s and
-                renders the first one that matches the current URL. */}
-                    <Switch>
-                        <Route path="/pixel-editor">
-                            <PixelEditor spaceUser={spaceUser} spaceStorage={spaceStorage} />
-                        </Route>
-                        <Route path="/nft-maker">
-                            <NftMaker />
-                        </Route>
-                        {/*<Route path="/users">*/}
-                        {/*    <Users />*/}
-                        {/*</Route>*/}
-                        <Route path="/">
-                            <Home />
-                        </Route>
-                    </Switch>
-                </div>
-            </Router>
-        // </UserContext.Provider>
+                <Switch>
+                    <Route path="/pixel-editor">
+                        <PixelEditor spaceUser={spaceUser} spaceStorage={spaceStorage} />
+                    </Route>
+                    <Route path="/nft-maker">
+                        <NftMaker />
+                    </Route>
+                    <Route path="/test">
+                        <TestSpaceSDK />
+                    </Route>
+                    <Route path="/">
+                        <Home />
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
     );
 }
 

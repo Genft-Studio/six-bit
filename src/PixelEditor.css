@@ -13,6 +13,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    margin: 20px;
 }
 
 .color {
@@ -20,8 +21,12 @@
 }
 
 input.color {
-    width: 70px;
+    width: 100px;
     margin-right: 5px;
+}
+
+input[type=number] {
+    width: 80px;
 }
 
 .row {
@@ -46,6 +51,6 @@ input.color {
 
 textarea {
     width: 100%;
-    height: 400px;
+    height: 150px;
     font-size: 10px;
 }

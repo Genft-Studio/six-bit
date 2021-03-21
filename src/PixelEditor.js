@@ -9,10 +9,13 @@ import ReadableString from './ReadableString'
 import {Readable} from "stream";
 import stringToStream from "string-to-stream"
 import Streamify from "streamify-string"
+import { NFTStorage, Blob } from 'nft.storage'
 
 function PixelEditor(props) {
     const emptyColor = "#ffffff"
-    const bucketName = "gashapon";
+    const bucketName = "gashapon"
+    const localStorageKey = "saved-art"
+    const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
 
     const [currentColor, setCurrentColor] = useState("1")
     const [color1, setColor1] = useState("331a00")
@@ -33,6 +36,8 @@ function PixelEditor(props) {
     const [mouseState, setMouseState] = useState(-1)
     const [directoryList, setDirectoryList] = useState({ items: [] })
     const [currentPath, setCurrentPath] = useState("")
+    const [nftStorageClient, setNftStorageClient] = useState(null)
+    const [savedArt, setSavedArt] = useState([])
 
     const handleColorSelect = (changeEvent) => {
         // console.log("Select color: ", changeEvent.target.value)
@@ -140,16 +145,26 @@ function drawCanvas(array) {
     }
 
     const handleRead = () => {
-        let str = out;
-        let array = str.split("\n").map(function(row) {
-            return row.split(" ").map(function(x) {
-                return parseInt(x, 10);
-            });
-        })
+        let array = pixelDataToArray(out)
+        // let str = out;
+        // let array = str.split("\n").map(function(row) {
+        //     return row.split(" ").map(function(x) {
+        //         return parseInt(x, 10);
+        //     });
+        // })
         let newA = array
         setA(newA)
         // drawCanvas(newA)
         console.log(newA)
+    }
+
+    const pixelDataToArray = (data) => {
+        let array = data.split("\n").map(function(row) {
+            return row.split(" ").map(function(x) {
+                return parseInt(x, 10);
+            });
+        })
+        return array
     }
 
     /*
@@ -364,7 +379,20 @@ function drawCanvas(array) {
         // console.log("aChange", aChange)
     }
 
-    const handleOpenFile = async (file) => {
+    const handleOpenFile = async (cid) => {
+        // read a file from nft.storage
+        console.log("Request to open file: ", cid)
+        const art = _.find(savedArt, {cid: cid})
+        console.log("art: ", art)
+
+        let pixelData = pixelDataToArray(art.data)
+        setA(pixelData)
+
+        // const status = await nftStorageClient.status(cid)
+        // console.log("status: ", status)
+    }
+
+    const handleOpenFileFleek = async (file) => {
         // read content of an uploaded file
         console.log("Request to open file")
         // const fileResponse = await props.spaceStorage.openFile({ bucket: bucketName, path: '/file.txt'});
@@ -378,6 +406,47 @@ function drawCanvas(array) {
         const dataString = canvasToString()
         console.log("dataString", dataString)
 
+        const content = new Blob([dataString])
+        const cid = await nftStorageClient.storeBlob(content)
+        console.log("cid: ", cid)
+
+        const png = generatePNG();
+        console.log("png: ", png)
+
+        console.log("savedArt: ", savedArt)
+        const newArt = {cid: cid, data: dataString, png: png};
+        // check if newArt is already present
+        if(_.find(savedArt, {cid: cid}))
+        {
+            console.log("Art asset already present, not adding it")
+        } else {
+            console.log("Art asset appears new, saving it")
+            const savedArtTmp = [...savedArt, newArt]
+            console.log("savedArtTmp: ", savedArtTmp)
+            setSavedArt(savedArtTmp)
+            localStorage.setItem(localStorageKey, JSON.stringify(savedArtTmp))
+        }
+
+        // const statusOfCid = await nftStorageClient.status(cid)
+        // console.log("statusOfCid: ", statusOfCid)
+
+        // This approach generates an IPFS directory with a single CID.
+        // NOTE: the generated PNG in this approach just looks white
+        /*
+        const png = generatePNG();
+        console.log("png: ", png)
+        const cid = await nftStorageClient.storeDirectory([
+            new File([dataString], "art.txt"),
+            new File([png], "art.png")
+        ])
+        console.log("cid: ", cid)
+        */
+    }
+
+    const handleSaveFileNOTWORKING = async () => {
+        console.log("Request to save file")
+        const dataString = canvasToString()
+        console.log("dataString", dataString)
 
         // const dataBuffer = stringToStream(dataString)
 
@@ -389,19 +458,23 @@ function drawCanvas(array) {
 
         const dataBuffer = Streamify(dataString)
 
-
         console.log("dataBuffer", dataBuffer)
+
+        console.log("DEBUG: before addItems")
 
         const uploadResponse = await props.spaceStorage.addItems({
             bucket: bucketName,
             files: [
                 {
                     path: 'file.txt',
-                    content: dataBuffer,
+                    content: "",
                     mimeType: 'plain/text'
                 }
             ],
         });
+
+        console.log("DEBUG: after addItems")
+
         uploadResponse.once('done', (data) => {
             const summary = data
             console.log("File upload complete", summary)
@@ -409,12 +482,16 @@ function drawCanvas(array) {
         });
 
         uploadResponse.on('data', (data) => {
+            console.log("on data handler")
             const status = data
             // update event on how each file is uploaded
         });
 
+        console.log("DEBUG: after on data handler defined")
+
         uploadResponse.on('error', (err) => {
             const status = err
+            console.log("ERROR HANDLER: ", status)
             // error event if a file upload fails
             // status.error contains the error
         });
@@ -423,8 +500,6 @@ function drawCanvas(array) {
         //     const summary = data as AddItemsResultSummary;
         //     // returns a summary of all files and their upload status
         // });
-
-
 
         /*
         // const dataBuffer = Readable.from('hello - this is only a test').pipe(process.stdout);
@@ -469,15 +544,23 @@ function drawCanvas(array) {
          */
     }
 
+    // Run once after page fully loads
     useEffect(() => {
-        // drawCanvas(a)
         document.onmousedown=function(e){
             setMouseState(e.button)
-            // console.log("Mouse Down: ", e.button)
         }
         document.onmouseup=function(e){
             setMouseState(-1);
-            // console.log("Mouse Up")
+        }
+
+        // Initialize nft.storage client
+        const client = new NFTStorage({ token: nftStorageKey })
+        setNftStorageClient(client)
+
+        let savedArtTmp = JSON.parse(localStorage.getItem(localStorageKey));
+        console.log("savedArtTmp:", savedArtTmp)
+        if (!_.isEmpty(savedArtTmp)) {
+            setSavedArt(savedArtTmp)
         }
     }, [])
 
@@ -580,8 +663,8 @@ function drawCanvas(array) {
             <input id="c5" type="radio" name="color" value="5" checked={currentColor === "5"} onChange={handleColorSelect} />
             <input className="color" id="color5" value={color5} onChange={e => setColor5(e.target.value)} style={{backgroundColor: "#" + color5}} />
 
-            <input id="c6" type="radio" name="color" value="6" checked={currentColor === "6"} onChange={handleColorSelect} />
-            <input className="color" id="color6" value={color6} onChange={e => setColor6(e.target.value)} style={{backgroundColor: "#" + color6}} />
+            {/*<input id="c6" type="radio" name="color" value="6" checked={currentColor === "6"} onChange={handleColorSelect} />*/}
+            {/*<input className="color" id="color6" value={color6} onChange={e => setColor6(e.target.value)} style={{backgroundColor: "#" + color6}} />*/}
             <div>
                 <input id="iw" type="number" value={iw} onChange={e => setIw(e.target.value)} />
                 <input id="ih" type="number" value={ih} onChange={e => setIh(e.target.value)} />
@@ -600,18 +683,16 @@ function drawCanvas(array) {
                 <button id="palette"onClick={handleRandomizePalette}>
                     Randomize Palette
                 </button>
-                <input name="grid" type="checkbox" id="grid" checked={grid} onChange={e => {console.log("grid: ", e); setGrid(e.target.checked)}} />
+                <input name="grid" type="checkbox" id="grid" checked={grid} onChange={e => setGrid(e.target.checked)} />
                 <label htmlFor="grid">Grid</label>
                 <button id="png" onClick={handlePng}>
                     PNG
                 </button>
-                <input id="pngPixelSize" type="number" value={pngPixelSize} onChange={e => setPngPixelSize(e.target.value)} />
+                {/*<input id="pngPixelSize" type="number" value={pngPixelSize} onChange={e => setPngPixelSize(e.target.value)} />*/}
 
-                {!_.isEmpty(currentPath) && (
-                    <button id="saveFile" onClick={handleSaveFile}>
-                        Save File
-                    </button>
-                )}
+                <button id="saveFile" onClick={handleSaveFile}>
+                    Save File
+                </button>
             </div>
             {/*
             <div>
@@ -623,6 +704,7 @@ function drawCanvas(array) {
             </div>
             */}
             <div className="file-directory">
+                {/*
                 {_.isEmpty(props.spaceStorage) && (
                     <p>Loading user data...</p>
                 )}
@@ -651,6 +733,24 @@ function drawCanvas(array) {
                                             )
                                         })}
                                     </Fragment>
+                                )
+                            })}
+                        </ul>
+                    </>
+                )}
+                */}
+
+                {!_.isEmpty(savedArt) && (
+                    <>
+                        <p>Saved Designs:</p>
+                        <ul>
+                            {savedArt.map((art, index) => {
+                                const cid = art.cid
+                                return (
+                                    <li key={index + cid} onClick={() => {handleOpenFile(cid)}}>
+                                        <img src={art.png} alt="" width="25px" />
+                                        {cid.substring(0,23)}.....{cid.substring(cid.length-23, cid.length)}<br />
+                                    </li>
                                 )
                             })}
                         </ul>
