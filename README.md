@@ -37,3 +37,14 @@ As new MoonOwls are minted, the price goes up. As MoonOwls are burned, the price
 
 ### Revenue Share
 Minting charges are split between reserves to pay out for burned NFTs and the owner/artist. The percentage are set when the vending machine contract is set up.
+
+## TODO
+- [x] Build PoW miner
+- [x] Build pixel editor
+- [ ] Contract factory
+- [ ] NFT minter
+- [x] Escalating price
+- [ ] Burn to earn
+- [ ] Website animations
+- [ ] Deploy to Rinkeby
+- [ ] Deploy to mainnet

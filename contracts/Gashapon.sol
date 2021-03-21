@@ -13,6 +13,7 @@ contract Gashapon is ERC721, Ownable {
     uint256 public difficulty1Target;
     uint256 public totalDifficulty;
     uint8 public dnaBitLength;
+    string public cidRoot;
 
     uint256 public nextPrice;
     uint8 priceIncreasePercentage;
@@ -34,7 +35,8 @@ contract Gashapon is ERC721, Ownable {
         uint8 _minimumDifficultyBits,
         uint8 _dnaBitLength,
         uint256 _initialPrice,
-        uint8 _priceIncreasePercentage
+        uint8 _priceIncreasePercentage,
+        string memory _cidRoot
     ) public ERC721(_tokenName, _tokenSymbol)
     {
         // TODO set the artist commission
@@ -42,6 +44,7 @@ contract Gashapon is ERC721, Ownable {
         dnaBitLength = _dnaBitLength;
         nextPrice = _initialPrice;
         priceIncreasePercentage = _priceIncreasePercentage;
+        cidRoot = _cidRoot;
     }
 
     function mint(
@@ -52,7 +55,7 @@ contract Gashapon is ERC721, Ownable {
         require(msg.value >= nextPrice, 'not enough paid');
 
         // Increase the next price
-        nextPrice = msg.value + (msg.value * priceIncreasePercentage / 100);
+        nextPrice += (nextPrice * priceIncreasePercentage / 100);
 
         require(!nameExists(_name), 'name must be unique');
 

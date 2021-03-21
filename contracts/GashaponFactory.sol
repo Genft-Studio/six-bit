@@ -15,22 +15,24 @@ contract GashaponFactory {
     // TODO: Add field for IPFS path to data files
 
     function createChild(
-//        string memory _tokenName,
-//        string memory _tokenSymbol,
+    //        string memory _tokenName,
+    //        string memory _tokenSymbol,
         string calldata _tokenName,
         string calldata _tokenSymbol,
         uint8 _minimumDifficultyBits,
         uint8 _dnaBitLength,
         uint256 _initialPrice,
-        uint8 _priceIncreasePercentage
-    ) external{
+        uint8 _priceIncreasePercentage,
+        string calldata _cidRoot
+    ) external {
         Gashapon child = new Gashapon(
             _tokenName,
             _tokenSymbol,
             _minimumDifficultyBits,
             _dnaBitLength,
             _initialPrice,
-            _priceIncreasePercentage
+            _priceIncreasePercentage,
+            _cidRoot
         );
         children.push(child);
         emit GashaponCreated(address(child));
@@ -38,10 +40,10 @@ contract GashaponFactory {
 
     // TODO: Check if it's necessary to declare this function (adapted from sample factory)
     //       or if a getter will be auto-generated in it's absence
-    function getChildren() external view returns(Gashapon[] memory _children){
+    function getChildren() external view returns (Gashapon[] memory _children){
         _children = new Gashapon[](children.length);
         uint count;
-        for(uint i=0;i<children.length; i++){
+        for (uint i = 0; i < children.length; i++) {
             _children[count] = children[i];
             count++;
         }

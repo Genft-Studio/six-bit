@@ -1,15 +1,23 @@
 const Gashapon = artifacts.require('Gashapon')
+const GashaponFactory = artifacts.require('GashaponFactory')
+
 const {utils: {solidityKeccak256}, BigNumber} = require("ethers")
 
 contract('Gashapon', async accounts => {
     it("should add DNA, name and difficulty when minting", async () => {
+        const factory = await GashaponFactory.deployed()
+
         const seed = new Uint8Array(Buffer.from('e6b2d7a64491e7544051cb9906851bdc2258944d8651c7fbd2b90a2eae8c6600', 'hex'))
         const expectedHash = Buffer.from('000092402e1010955f5fbdde21834684afa23a0dcaf065b704e12a581d09d748', 'hex')
         const expectedDna = Buffer.from( '000000000000000000000000000000000000000000000000000000001d09d748', 'hex')
         const testName = "My awesome owl!"
         const tokenURI = "fake://Uri"
 
-        const instance = await Gashapon.deployed()
+        const child = await factory.createChild("Gashapon", "$OWL", 16, 32, .001 * 10 ** 18, 5,
+            'https://bafybeiawde3rbrxyhv2yelitx2awslwbjmfkxsqmjfx44hcv56dwf77f2m.ipfs.dweb.link/')
+
+        console.log('Gashapon instance address:', child.logs[0].args._address)
+        const instance = await Gashapon.at(child.logs[0].args._address)
 
         const nextId = await instance.totalSupply()
 
