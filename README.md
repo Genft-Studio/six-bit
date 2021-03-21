@@ -41,7 +41,8 @@ Minting charges are split between reserves to pay out for burned NFTs and the ow
 ## TODO
 - [x] Build PoW miner
 - [x] Build pixel editor
-- [ ] Contract factory
+- [x] Contract factory
+- [ ] Contract facory UI
 - [ ] NFT minter
 - [x] Escalating price
 - [ ] Burn to earn
