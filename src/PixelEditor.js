@@ -610,7 +610,7 @@ function drawCanvas(array) {
      */
 
     return (
-        <div className="App">
+        <div className="App pixel-editor">
             <h1 className="text-center">Pixel Art Editor</h1>
 
             <div id="canvas" className={grid ? "grid": ""} onContextMenu={() => {return false}}>

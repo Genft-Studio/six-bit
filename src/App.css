@@ -109,27 +109,27 @@ h1 {
   color: #ffffbb;
 }
 
-.file-directory ul {
+.pixel-editor .file-directory ul {
   list-style: none;
 }
-.file-directory li {
+.pixel-editor .file-directory li {
   padding-left: 10px;
   padding-right: 10px;
   border: 4px solid transparent;
   cursor: pointer;
 }
-.file-directory li:hover,
-.file-directory li.current:hover{
+.pixel-editor .file-directory li:hover,
+.pixel-editor .file-directory li.current:hover{
   /*background-color: #222222;*/
   /*color: #eeeeee;*/
   border: 4px solid #61fb61;
 }
-.file-directory li.current {
+.pixel-editor .file-directory li.current {
   background-color: #eeeeee;
   color: #222222;
   border: 4px solid #61dafb;
 }
-.file-directory li img {
+.pixel-editor .file-directory li img {
   margin: 4px 10px 0 0;
 
   image-rendering: pixelated;
@@ -137,9 +137,43 @@ h1 {
   transition: transform 0.75s;
 }
 
-.file-directory li:hover img {
+.pixel-editor .file-directory li:hover img {
   transform: scale(3);
 }
+
+.nft-maker ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 20px 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.nft-maker li {
+  float: left;
+}
+
+.nft-maker li img {
+  image-rendering: pixelated;
+  -webkit-transition: transform 0.75s;
+  transition: transform 0.75s;
+}
+
+.nft-maker li:hover img {
+  transform: scale(1.4);
+}
+
+
+.nft-maker li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+
+
 
 /*** Some page style elements come from https://mooncatrescue.com/ ***/
 
