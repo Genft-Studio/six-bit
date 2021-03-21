@@ -1,13 +1,11 @@
 const Gashapon = artifacts.require('Gashapon')
 const {utils: {solidityKeccak256}, BigNumber} = require("ethers")
 
-// const accounts = await web3.eth.getAccounts()
-
-contract('Gaspapon', async accounts => {
+contract('Gashapon', async accounts => {
     it("should add DNA, name and difficulty when minting", async () => {
         const seed = new Uint8Array(Buffer.from('e6b2d7a64491e7544051cb9906851bdc2258944d8651c7fbd2b90a2eae8c6600', 'hex'))
         const expectedHash = Buffer.from('000092402e1010955f5fbdde21834684afa23a0dcaf065b704e12a581d09d748', 'hex')
-        const expectedDna = Buffer.from('1d09d748', 'hex')
+        const expectedDna = Buffer.from( '000000000000000000000000000000000000000000000000000000001d09d748', 'hex')
         const testName = "My awesome owl!"
         const tokenURI = "fake://Uri"
 
@@ -15,12 +13,8 @@ contract('Gaspapon', async accounts => {
 
         const nextId = await instance.totalSupply()
 
-        console.log('starting minting...')
         const paymentAmount = BigNumber.from(10).pow(18).div(100)
         await instance.mint(seed, testName, tokenURI, {value: paymentAmount})
-
-        console.log('calculated hash:', await instance.debug.call())
-        console.log('finished minting...')
 
         assert.equal(parseInt(nextId) + 1, await instance.totalSupply())
 
@@ -31,7 +25,7 @@ contract('Gaspapon', async accounts => {
         const {0: name, 1: dna, 2: difficulty} = await instance.getTokenOverview(nextId)
 
         assert.equal(testName, name)
-        // FIXME assert.equal(expectedDna.toString('hex'), dna.toString(16, 8))
-        // FIXME assert(difficulty.toNumber() >= 1, 'difficulty should be at least one')
+        assert.equal(expectedDna.toString('hex'), dna.toString(16, 8).slice(2))
+        assert(difficulty.toNumber() >= 1, 'difficulty should be at least one')
     })
 })
