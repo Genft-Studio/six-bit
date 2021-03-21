@@ -125,6 +125,11 @@ function NftMinter() {
                                                 Offer shares on NIFTEX
                                             </button>
                                         </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Display in Decentraland
+                                            </button>
+                                        </OverlayTrigger>
                                     </div>
                                 )}
                             </>

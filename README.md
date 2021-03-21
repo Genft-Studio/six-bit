@@ -57,6 +57,7 @@ Minting charges are split between reserves to pay out for burned NFTs and the ow
 - [ ] Wire up `Add to NTFX` button
 - [ ] Wire up `Offer shares on NIFTEX` button
 - [ ] Wire up `Burn` button
+- [ ] Wire up `Display in Decentraland` button
 - [ ] Deploy to Rinkeby
 - [ ] Deploy to mainnet
 - [ ] Set up ENS
