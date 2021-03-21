@@ -19,16 +19,16 @@ contract Gashapon is ERC721, Ownable {
 
     bytes32 public debug; // TODO remove me
 
-    struct Toy {
+    struct Token {
         bytes32 dna;
         string name;
         uint256 difficulty;
     }
 
     mapping(bytes32 => bool) byDna; // dna must be unique
-    mapping(string => bool) byName; // Toy names must be unique
+    mapping(string => bool) byName; // Token names must be unique
 
-    Toy[] public toys;
+    Token[] public tokens;
 
     constructor(
         string memory _tokenName,
@@ -54,7 +54,7 @@ contract Gashapon is ERC721, Ownable {
         require(msg.value >= nextPrice, 'not enough paid');
 
         // Increase the next price
-        nextPrice = msg.value * priceIncreasePercentage / 100;
+        nextPrice = msg.value + (msg.value * priceIncreasePercentage / 100);
 
         // TODO verify that enough funds were submitted
         require(!nameExists(_name), 'name must be unique');
@@ -71,10 +71,10 @@ contract Gashapon is ERC721, Ownable {
         byName[_name] = true;
         byDna[dna] = true;
 
-        uint256 newId = toys.length;
+        uint256 newId = tokens.length;
 
-        toys.push(
-            Toy(dna, _name, difficulty)
+        tokens.push(
+            Token(dna, _name, difficulty)
         );
         _safeMint(msg.sender, newId);
         _setTokenURI(newId, _tokenUri);
@@ -98,20 +98,16 @@ contract Gashapon is ERC721, Ownable {
         return tokenURI(tokenId);
     }
 
-    function getNumberOfToys() public view returns (uint256) {
-        return toys.length;
-    }
-
     function getAverageDifficulty() public view returns (uint256) {
-        return totalDifficulty / toys.length;
+        return totalDifficulty / tokens.length;
     }
 
-    function getToyOverview(uint256 tokenId) public view returns (string memory, bytes32, uint256)
+    function getTokenOverview(uint256 tokenId) public view returns (string memory, bytes32, uint256)
     {
         return (
-        toys[tokenId].name,
-        toys[tokenId].dna,
-        toys[tokenId].difficulty
+        tokens[tokenId].name,
+        tokens[tokenId].dna,
+        tokens[tokenId].difficulty
         );
     }
 }

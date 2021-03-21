@@ -1,5 +1,5 @@
 const Gashapon = artifacts.require('Gashapon')
-const {utils: {solidityKeccak256}} = require("ethers")
+const {utils: {solidityKeccak256}, BigNumber} = require("ethers")
 
 // const accounts = await web3.eth.getAccounts()
 
@@ -13,17 +13,22 @@ contract('Gaspapon', async accounts => {
 
         const instance = await Gashapon.deployed()
 
-        const nextId = await instance.getNumberOfToys()
+        const nextId = await instance.totalSupply()
 
         console.log('starting minting...')
-        await instance.mint(seed, testName, tokenURI, {value: 0.01 * 10**18})
+        const paymentAmount = BigNumber.from(10).pow(18).div(100)
+        await instance.mint(seed, testName, tokenURI, {value: paymentAmount})
 
         console.log('calculated hash:', await instance.debug.call())
         console.log('finished minting...')
 
-        assert.equal(parseInt(nextId) + 1, await instance.getNumberOfToys())
+        assert.equal(parseInt(nextId) + 1, await instance.totalSupply())
 
-        const {0: name, 1: dna, 2: difficulty} = await instance.getToyOverview(nextId)
+        const nextPrice = await instance.nextPrice.call();
+        const expectedNewPaymentAmount = paymentAmount.mul(105).div(100);
+        // FIXME assert(expectedNewPaymentAmount.eq(nextPrice))
+
+        const {0: name, 1: dna, 2: difficulty} = await instance.getTokenOverview(nextId)
 
         assert.equal(testName, name)
         // FIXME assert.equal(expectedDna.toString('hex'), dna.toString(16, 8))
