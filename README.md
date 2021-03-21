@@ -41,9 +41,11 @@ Minting charges are split between reserves to pay out for burned NFTs and the ow
 ## TODO
 - [x] Build PoW miner
 - [x] Build pixel editor
-- [x] Contract factory
-- [ ] Contract facory UI
-- [ ] NFT minter
+- [x] Store Gashapon instance elements on nft.storage
+- [x] Gashapon contract
+- [x] GashaponFactory contract
+- [ ] Contract factory UI
+- [ ] NFT minter UI
 - [x] Escalating price
 - [ ] Burn to earn
 - [ ] Website animations
