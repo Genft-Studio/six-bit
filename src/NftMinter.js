@@ -1,17 +1,16 @@
 import _ from "lodash";
 import {Fragment, useState, useEffect} from "react";
-import { ethers } from "ethers";
+import {ethers} from "ethers";
 import gashaponFactoryAbi from "./abis/GashaponFactory.json";
+import {Popover, OverlayTrigger} from 'react-bootstrap'
 
 function NftMinter() {
-    const localStorageKey = "saved-art"
     const [provider, setProvider] = useState(null)
     const [signer, setSigner] = useState(null)
     const [collectionCid, setCollectionCid] = useState(null)
     const [collectionAddress, setCollectionAddress] = useState(null)
     const [collectionData, setCollectionData] = useState(null)
-    const [savedArt, setSavedArt] = useState([])
-
+    const [minted, setMinted] = useState(false)
     // TODO: Pull collection contract address from url if present, for easy linking
 
     const handleConnectEthereum = async () => {
@@ -48,15 +47,16 @@ function NftMinter() {
             averageDifficulty: "16",
             nextPrice: "0.1 ETH",
         })
-
-        // load saved data from localstorage for demo
-        // TODO: load this data from IPFS
-        let savedArtTmp = JSON.parse(localStorage.getItem(localStorageKey));
-        console.log("savedArtTmp:", savedArtTmp)
-        if (!_.isEmpty(savedArtTmp)) {
-            setSavedArt(savedArtTmp)
-        }
     }, [])
+
+    const todoPopover = (
+        <Popover id="popover-basic">
+            <Popover.Title as="h3">Not implemented</Popover.Title>
+            <Popover.Content>
+                We haven't been able to implement this feature yet. 😿
+            </Popover.Content>
+        </Popover>
+    )
 
 
     return (
@@ -76,41 +76,62 @@ function NftMinter() {
                         {_.isNull(collectionAddress) && (
                             <>
                                 NFT Collection Contract Address:
-                                <input name="collectionAddressInput" />
+                                <input name="collectionAddressInput"/>
                             </>
-                        )}
-
-                        {!_.isEmpty(savedArt) && (
-                            <div>
-                                {savedArt.map((art, index) => {
-                                    const cid = art.cid
-                                    return (
-                                        <span key={index + cid}>
-                                            {/*{cid.substring(0,23)}.....{cid.substring(cid.length-23, cid.length)}<br />*/}
-                                            <img src={art.png} alt="" width="100px" />
-                                        </span>
-                                    )
-                                })}
-                            </div>
-
                         )}
 
                         {!_.isNull(collectionAddress) && (
                             <>
-                                Collection name: {collectionData.name}<br />
-                                Symbol: {collectionData.symbol}<br />
-                                Avg Difficulty: {collectionData.averageDifficulty}<br />
-                                Next Price: {collectionData.nextPrice}<br />
+                                Collection name: {collectionData.name}<br/>
+                                Symbol: {collectionData.symbol}<br/>
+                                Avg Difficulty: {collectionData.averageDifficulty}<br/>
+                                Next Price: {collectionData.nextPrice}<br/>
 
-                                <button >
+                                <button>
                                     Search for NFTs
-                                </button><br />
+                                </button>
+                                <br/>
 
                                 NFT Found!
 
-                                <button >
+                                <button onClick={()=>setMinted(true)} disabled={minted}>
                                     Mint NFT
                                 </button>
+
+                                {minted && (
+                                    <div className='shillzone'>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Burn and earn
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Sell on Raribles
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Sell on SuperRare
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Add to NTFX
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Offer shares on NIFTEX
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Display in Decentraland
+                                            </button>
+                                        </OverlayTrigger>
+                                    </div>
+                                )}
                             </>
                         )}
 

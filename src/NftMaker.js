@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 import {NFTStorage} from "nft.storage";
 import { ethers } from "ethers";
 import gashaponFactoryAbi from "./abis/GashaponFactory.json"
+import {OverlayTrigger, Popover} from "react-bootstrap";
 
 // TODO: Keep GashaponFactory.json up to date, copy from build/contracts/...
 
@@ -121,6 +122,15 @@ function NftMaker() {
         }
     }, [])
 
+    const todoPopover = (
+        <Popover id="popover-basic">
+            <Popover.Title as="h3">Not implemented</Popover.Title>
+            <Popover.Content>
+                We haven't been able to implement this feature yet. 😿
+            </Popover.Content>
+        </Popover>
+    )
+
     return (
         <div className="App nft-maker">
 
@@ -188,6 +198,23 @@ function NftMaker() {
                                 {!_.isNull(collectionCid) && (
                                     <a href={ipfsGatewayUrl(collectionCid)} target="_blank">IPFS Archive</a>
                                 )}
+                                <div className='shillzone'>
+                                    <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                        <button>
+                                            Offer collection through a vending machine in Decentraland
+                                        </button>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                        <button>
+                                            Add an ENS domain
+                                        </button>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                        <button>
+                                            Deploy DAPP to IPFS
+                                        </button>
+                                    </OverlayTrigger>
+                                </div>
                             </>
                         )}
 

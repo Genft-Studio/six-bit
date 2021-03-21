@@ -47,7 +47,17 @@ Minting charges are split between reserves to pay out for burned NFTs and the ow
 - [ ] Contract factory UI
 - [ ] NFT minter UI
 - [x] Escalating price
-- [ ] Burn to earn
+- [ ] Add burn functionality to Gashapon contract
 - [ ] Website animations
+- [ ] Wire up `Add vending machine to Decentraland` button
+- [ ] Wire up `Add an ENS domain` button
+- [ ] Wire up `Deploy DAPP to IPFS` button
+- [ ] Wire up `Sell on Raribles` button
+- [ ] Wire up `Sell on SuperRare` button
+- [ ] Wire up `Add to NTFX` button
+- [ ] Wire up `Offer shares on NIFTEX` button
+- [ ] Wire up `Burn` button
+- [ ] Wire up `Display in Decentraland` button
 - [ ] Deploy to Rinkeby
 - [ ] Deploy to mainnet
+- [ ] Set up ENS
