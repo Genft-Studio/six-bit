@@ -25,9 +25,11 @@ Inspired by [Moon Cat Rescue](https://mooncatrescue.com/), we decided to create 
 Like MoonCats you have to mine for MoonOwls. What's different is that the longer you mine, the higher the 'level' of the MoonOwl you will get. We built a miner where you can specify the minimum rarity of the MoonOwl you want to buy. The more rare, the longer you have to mine. It doesn't cost any more to buy a rarer MoonOwl you just have to be willing to wait more than a minute or two to mine it. If you wait hours or days, you will find extremely rare MoonOwls. But if you wait too long to buy, you might lose the opportunity to buy it at at today's price (see Escalating Price).
 
 ### Escalating Price
-The price of each new MoonOwl is higher than the price of the last MoonOwl. The price starts at a fairly low amount (say .001 Ether). Each additional MoonOwl costs a set percentage more that the last one that was sold. The longer you wait to to buy one, the more you will have to pay.
+The price of each new MoonOwl is higher than the price of the last MoonOwl. The price starts at a fairly low amount (say .001 Ether). Each additional MoonOwl costs a set percentage more that the last one that was sold, the price rises exponentially. The longer you wait to to buy one, the more you will have to pay.
 
 ### Burn baby burn
 If you own a sick MoonOwl, can cash in on Raribles, or SuperRare, or maybe wrap it in an NFTX index fund, sell shares in it through NIFTEX, rent it to Decentraland Art Gallery, or just proudly display it on your ENS powered website.
 
-On the other hand, if the MoonOwl that you got isn't one of  crème de la crème that are fetching top dollar, you can still show off your one-of-a-kind, cute little moon owl...or you can burn it and get a percentage of the last price that was last paid for a MoonOwl from the vending machine. So say you bought yours for .001 Ether and a few hundred have been sold since then. Maybe the last one that was sold went for 0.1 Ether. You can choose to burn your MoonOwl and collect 0.09 ether.
+On the other hand, if the MoonOwl that you got isn't one of  crème de la crème that are fetching top dollar, you can still show off your one-of-a-kind, cute little moon owl...or you can burn it and get a percentage of the last price that was last paid for a MoonOwl from the vending machine. So say you bought yours for .001 Ether and a few hundred have been sold since then. Maybe the last one that sold went for 0.1 Ether. You can choose to burn your MoonOwl and collect 0.09 ether, netting a 90x profit!
+
+As new MoonOwls are minted, the price goes up. As MoonOwls are burned, the price goes down.
