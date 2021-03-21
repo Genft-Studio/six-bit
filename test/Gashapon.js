@@ -16,7 +16,7 @@ contract('Gaspapon', async accounts => {
         const nextId = await instance.getNumberOfToys()
 
         console.log('starting minting...')
-        await instance.mintToy(seed, testName, tokenURI)
+        await instance.mintToy(seed, testName, tokenURI, {value: 0.01 * 10**18})
 
         console.log('calculated hash:', await instance.debug.call())
         console.log('finished minting...')

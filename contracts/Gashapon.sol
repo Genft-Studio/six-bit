@@ -10,13 +10,14 @@ contract Gashapon is ERC721, Ownable {
     using SafeMath for uint256;
     using Strings for string;
 
-    string constant UNPROVEN_NAME = "<unproven>";
-
     uint256 public difficulty1Target;
     uint256 public totalDifficulty;
     uint8 public dnaBitLength;
 
-    bytes32 public debug;
+    uint256 public nextPrice;
+    uint8 priceIncreasePercentage;
+
+    bytes32 public debug; // TODO remove me
 
     struct Toy {
         bytes32 dna;
@@ -33,12 +34,16 @@ contract Gashapon is ERC721, Ownable {
         string memory _tokenName,
         string memory _tokenSymbol,
         uint8 _minimumDifficultyBits,
-        uint8 _dnaBitLength
+        uint8 _dnaBitLength,
+        uint256 _initialPrice,
+        uint8 _priceIncreasePercentage
     ) public ERC721(_tokenName, _tokenSymbol)
     {
         // TODO set the starting price, the price escalation factor, artist commission
         difficulty1Target = 2 ** (256 - uint256(_minimumDifficultyBits)) - 1;
         dnaBitLength = _dnaBitLength;
+        nextPrice = _initialPrice;
+        priceIncreasePercentage = _priceIncreasePercentage;
     }
 
     function mintToy(
@@ -46,11 +51,16 @@ contract Gashapon is ERC721, Ownable {
         string memory _name,
         string memory _tokenUri
     ) payable public returns (uint256) {
+        require(msg.value >= nextPrice, 'not enough paid');
+
+        // Increase the next price
+        nextPrice = msg.value * priceIncreasePercentage / 100;
+
         // TODO verify that enough funds were submitted
         require(!nameExists(_name), 'name must be unique');
 
         bytes32 work = keccak256(abi.encode(msg.sender, symbol(), _seed));
-        debug = work;
+        debug = work;  // TODO Remove me
         // FIXME require(uint256(work) <= difficulty1Target, 'not enough work');
 
         bytes32 dna = bytes32(uint256(work) % 2 ** uint256(dnaBitLength));
