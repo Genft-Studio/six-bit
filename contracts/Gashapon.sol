@@ -14,15 +14,17 @@ contract Gashapon is ERC721, Ownable {
 
     uint256 public difficulty1Target;
     uint256 public totalDifficulty;
+    uint8 public dnaBitLength;
+
+    bytes32 public debug;
 
     struct Toy {
-        uint256 dna;
+        bytes32 dna;
         string name;
         uint256 difficulty;
     }
 
-    mapping(uint256 => bytes32) idToSecurityHash;
-    mapping(uint256 => bool) byDna; // dna must be unique
+    mapping(bytes32 => bool) byDna; // dna must be unique
     mapping(string => bool) byName; // Toy names must be unique
 
     Toy[] public toys;
@@ -30,24 +32,42 @@ contract Gashapon is ERC721, Ownable {
     constructor(
         string memory _tokenName,
         string memory _tokenSymbol,
-        uint8 _minimumDifficultyBits
+        uint8 _minimumDifficultyBits,
+        uint8 _dnaBitLength
     ) public ERC721(_tokenName, _tokenSymbol)
     {
         // TODO set the starting price, the price escalation factor, artist commission
         difficulty1Target = 2 ** (256 - uint256(_minimumDifficultyBits)) - 1;
+        dnaBitLength = _dnaBitLength;
     }
 
-    function mintToy(bytes32 _securityHash) payable public returns (uint256) {
+    function mintToy(
+        uint256 _seed,
+        string memory _name,
+        string memory _tokenUri
+    ) payable public returns (uint256) {
         // TODO verify that enough funds were submitted
+        require(!nameExists(_name), 'name must be unique');
+
+        bytes32 work = keccak256(abi.encode(msg.sender, symbol(), _seed));
+        debug = work;
+        // FIXME require(uint256(work) <= difficulty1Target, 'not enough work');
+
+        bytes32 dna = bytes32(uint256(work) % 2 ** uint256(dnaBitLength));
+        uint256 difficulty = uint256(difficulty1Target) / uint256(work);
+
+        totalDifficulty += difficulty;
+
+        byName[_name] = true;
+        byDna[dna] = true;
 
         uint256 newId = toys.length;
 
         toys.push(
-            Toy(0x0, UNPROVEN_NAME, 0)
+            Toy(dna, _name, difficulty)
         );
-        idToSecurityHash[newId] = _securityHash;
-
         _safeMint(msg.sender, newId);
+        _setTokenURI(newId, _tokenUri);
 
         return newId;
     }
@@ -56,46 +76,8 @@ contract Gashapon is ERC721, Ownable {
 
     // TODO burn to get price of last sold less artist commission
 
-    function revealRarityProof(
-        uint256 _id,
-        uint256 _seed,
-        uint256 _dna, // TODO extract from the proofHash
-        string memory _name,
-        string memory _tokenUri
-    ) public {
-        require(
-            _isApprovedOrOwner(_msgSender(), _id),
-            "Proof provider is not owner"
-        );
-
-        require(!dnaExists(_dna), 'dna must be unique');
-        require(!nameExists(_name), 'name must be unique');
-
-        // Check the securityHash
-        bytes32 securityHash = keccak256(abi.encode(msg.sender, _seed));
-        require(securityHash == idToSecurityHash[_id], "proof doesn't match the security hash");
-
-        // TODO This might be subject to front-running
-        // Check for minimum work
-        // FIXME The hash doesn't match the hash generated in the miner
-        bytes32 work = keccak256(abi.encode(symbol(), _seed));
-//        require(uint256(work) <= difficulty1Target);
-
-        uint256 difficulty = uint256(difficulty1Target) / uint256(work);
-
-        totalDifficulty += difficulty;
-
-        byName[_name] = true;
-        byDna[_dna] = true;
-
-        toys[_id].name = _name;
-        toys[_id].dna = _dna;
-        toys[_id].difficulty = difficulty;
-        _setTokenURI(_id, _tokenUri);
-    }
-
-    function dnaExists(uint256 _dna) public view returns (bool) {
-        return _dna != 0 && byDna[_dna];
+    function dnaExists(bytes32 _dna) public view returns (bool) {
+        return uint256(_dna) != 0 && byDna[_dna];
     }
 
     function nameExists(string memory _name) public view returns (bool) {
@@ -114,7 +96,7 @@ contract Gashapon is ERC721, Ownable {
         return totalDifficulty / toys.length;
     }
 
-    function getToyOverview(uint256 tokenId) public view returns (string memory, uint256, uint256)
+    function getToyOverview(uint256 tokenId) public view returns (string memory, bytes32, uint256)
     {
         return (
         toys[tokenId].name,
