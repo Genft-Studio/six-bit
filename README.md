@@ -17,7 +17,7 @@ Inpired by Vivian Wu's [snowflake generator](https://viviariums.com/projects/sno
 We considered generating royal titles and a corresponding coat-of-arms. The titles are based on real historic titles and ones from fictional worlds. So you might end up buying a title like "The Guardian of York" or "Duke of Nogrod". Coats-of-arms would be generated from common elements typical of coats-of-arms with a randomized color scheme.
 
 ### MoonOwls
-Inspired by [Moon Cat Rescue](https://mooncatrescue.com/), we decided to create a Moon Owl generator. As part of the system, we also built a template generator so that other artist could create their own variation of cute, pixelated characters and set up a vending machine to dispense them.
+Inspired by [Moon Cat Rescue](https://mooncatrescue.com/), we decided to create a Moon Owl generator. As part of the system, we also built a template generator so that other artist could create their own variation of cute, pixelated characters that can be randomized and set up a vending machine to dispense them.
 
 ## The Economics
 
