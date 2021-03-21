@@ -1,13 +1,13 @@
 import "./PixelEditor.css"
 import {Fragment, useState} from "react";
 import {useEffect} from "react";
-import { Users, BrowserStorage } from '@spacehq/users'
+// import { Users, BrowserStorage } from '@spacehq/users'
 // import UserContext from "./UserContext";
 import _ from "lodash";
 // import Readable from 'stream';
-import ReadableString from './ReadableString'
-import {Readable} from "stream";
-import stringToStream from "string-to-stream"
+// import ReadableString from './ReadableString'
+// import {Readable} from "stream";
+// import stringToStream from "string-to-stream"
 import Streamify from "streamify-string"
 import { NFTStorage, Blob } from 'nft.storage'
 
@@ -84,48 +84,6 @@ function PixelEditor(props) {
         }
     }
 
-    /*
-function drawCanvas(array) {
-        $canvas.html('')
-        array.forEach(function(subArray, i) {
-            var $row = $("
-                <div className='row'></div>
-            ").appendTo($canvas);
-            subArray.forEach(function (cell, j
-            ) {
-                var color = getColorCode(cell)
-                var $cell = $("<div class='cell' style='background-color:" + color + "'></div>").appendTo($row)
-                $cell.on("mousedown", function(e) {
-                    var colorId = getActiveColorId();
-                    var colorCode = getColorCode(colorId)
-                    if (e.which === 1 && array[i][j] != colorId) {
-                        array[i][j] = colorId;
-                        $cell.css("background-color", colorCode);
-                    } else {
-                        array[i][j] = 0
-                        $cell.css("background-color", emptyColor);
-                    }
-                });
-                $cell.on("mouseenter", function(e) {
-                    var colorId = getActiveColorId();
-                    var colorCode = getColorCode(colorId);
-                    if (e.which === 1) {
-                        array[i][j] = colorId;
-                        $cell.css("background-color", colorCode)
-                    }
-                    if (e.which === 3) {
-                        array[i][j] = 0;
-                        $cell.css("background-color", emptyColor);
-                    }
-                    e.preventDefault();
-                    e.stopPropagation();
-                })
-            })
-        })
-        }
-     */
-
-
     const handleReset = () => {
         console.log("Reset pixel canvas")
         setA(initArray(parseInt(iw, 10), parseInt(ih, 10)))
@@ -146,15 +104,8 @@ function drawCanvas(array) {
 
     const handleRead = () => {
         let array = pixelDataToArray(out)
-        // let str = out;
-        // let array = str.split("\n").map(function(row) {
-        //     return row.split(" ").map(function(x) {
-        //         return parseInt(x, 10);
-        //     });
-        // })
         let newA = array
         setA(newA)
-        // drawCanvas(newA)
         console.log(newA)
     }
 
@@ -169,7 +120,6 @@ function drawCanvas(array) {
 
     const handleRandomizePalette = () => {
         generateColorPalette()
-        // drawCanvas(a)
     }
 
     const handlePng = () => {
@@ -436,6 +386,7 @@ function drawCanvas(array) {
         */
     }
 
+    // TODO: Probably remove this function entirely
     const handleSaveFileNOTWORKING = async () => {
         console.log("Request to save file")
         const dataString = canvasToString()
@@ -512,7 +463,6 @@ function drawCanvas(array) {
             ]
         })
 
-
         response.on('data', (data) => {
             const status = data;
             // update event on how each file is uploaded
@@ -537,6 +487,7 @@ function drawCanvas(array) {
          */
     }
 
+
     // Run once after page fully loads
     useEffect(() => {
         document.onmousedown=function(e){
@@ -556,11 +507,6 @@ function drawCanvas(array) {
             setSavedArt(savedArtTmp)
         }
     }, [])
-
-    // spaceStorage structure:
-    //
-    // bucket: gashapon
-    // path:   /<collectionName>/<imageName>
 
     const readStorage = async () => {
         const ls = await props.spaceStorage.listDirectory({ bucket: bucketName, path: '', recursive: true })

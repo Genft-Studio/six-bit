@@ -11,7 +11,6 @@ import { Users, BrowserStorage } from '@spacehq/users'
 import {UserStorage} from "@spacehq/storage";
 import {useState, useEffect, createContext} from "react";
 import _ from "lodash";
-// import TestSpaceSDK from "./TestSpaceSDK";
 import NftMaker from "./NftMaker";
 import NftMinter from "./NftMinter";
 
@@ -68,9 +67,6 @@ function App() {
                         <li>
                             <Link to="/nft-minter">NFT Minter</Link>
                         </li>
-                        {/*<li>*/}
-                        {/*    <Link to="/test">TEST</Link>*/}
-                        {/*</li>*/}
                     </ul>
                 </nav>
 
@@ -84,9 +80,6 @@ function App() {
                     <Route path="/nft-minter">
                         <NftMinter />
                     </Route>
-                    {/*<Route path="/test">*/}
-                    {/*    <TestSpaceSDK />*/}
-                    {/*</Route>*/}
                     <Route path="/">
                         <Home />
                     </Route>
