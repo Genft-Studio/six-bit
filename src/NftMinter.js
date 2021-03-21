@@ -1,7 +1,8 @@
 import _ from "lodash";
 import {Fragment, useState, useEffect} from "react";
-import { ethers } from "ethers";
+import {ethers} from "ethers";
 import gashaponFactoryAbi from "./abis/GashaponFactory.json";
+import {Popover, OverlayTrigger} from 'react-bootstrap'
 
 function NftMinter() {
     const [provider, setProvider] = useState(null)
@@ -9,7 +10,7 @@ function NftMinter() {
     const [collectionCid, setCollectionCid] = useState(null)
     const [collectionAddress, setCollectionAddress] = useState(null)
     const [collectionData, setCollectionData] = useState(null)
-
+    const [minted, setMinted] = useState(false)
     // TODO: Pull collection contract address from url if present, for easy linking
 
     const handleConnectEthereum = async () => {
@@ -48,6 +49,15 @@ function NftMinter() {
         })
     }, [])
 
+    const todoPopover = (
+        <Popover id="popover-basic">
+            <Popover.Title as="h3">Not implemented</Popover.Title>
+            <Popover.Content>
+                We haven't been able to implement this feature yet. 😿
+            </Popover.Content>
+        </Popover>
+    )
+
 
     return (
         <div className="App nft-minter">
@@ -66,26 +76,57 @@ function NftMinter() {
                         {_.isNull(collectionAddress) && (
                             <>
                                 NFT Collection Contract Address:
-                                <input name="collectionAddressInput" />
+                                <input name="collectionAddressInput"/>
                             </>
                         )}
 
                         {!_.isNull(collectionAddress) && (
                             <>
-                                Collection name: {collectionData.name}<br />
-                                Symbol: {collectionData.symbol}<br />
-                                Avg Difficulty: {collectionData.averageDifficulty}<br />
-                                Next Price: {collectionData.nextPrice}<br />
+                                Collection name: {collectionData.name}<br/>
+                                Symbol: {collectionData.symbol}<br/>
+                                Avg Difficulty: {collectionData.averageDifficulty}<br/>
+                                Next Price: {collectionData.nextPrice}<br/>
 
-                                <button >
+                                <button>
                                     Search for NFTs
-                                </button><br />
+                                </button>
+                                <br/>
 
                                 NFT Found!
 
-                                <button >
+                                <button onClick={()=>setMinted(true)} disabled={minted}>
                                     Mint NFT
                                 </button>
+
+                                {minted && (
+                                    <div className='shillzone'>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Burn and earn
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Sell on Raribles
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Sell on SuperRare
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Add to NTFX
+                                            </button>
+                                        </OverlayTrigger>
+                                        <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                            <button>
+                                                Offer shares on NIFTEX
+                                            </button>
+                                        </OverlayTrigger>
+                                    </div>
+                                )}
                             </>
                         )}
 
