@@ -225,3 +225,7 @@ button.nav{
 button.select{
   background-color: orange;
 }
+
+.shillzone {
+  display: none;
+}

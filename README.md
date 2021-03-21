@@ -50,6 +50,8 @@ Minting charges are split between reserves to pay out for burned NFTs and the ow
 - [ ] Add burn functionality to Gashapon contract
 - [ ] Website animations
 - [ ] Wire up `Add vending machine to Decentraland` button
+- [ ] Wire up `Add an ENS domain` button
+- [ ] Wire up `Deploy DAPP to IPFS` button
 - [ ] Wire up `Sell on Raribles` button
 - [ ] Wire up `Sell on SuperRare` button
 - [ ] Wire up `Add to NTFX` button
@@ -57,3 +59,4 @@ Minting charges are split between reserves to pay out for burned NFTs and the ow
 - [ ] Wire up `Burn` button
 - [ ] Deploy to Rinkeby
 - [ ] Deploy to mainnet
+- [ ] Set up ENS

@@ -200,6 +200,16 @@ function NftMaker() {
                                             Offer collection through a vending machine in Decentraland
                                         </button>
                                     </OverlayTrigger>
+                                    <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                        <button>
+                                            Add an ENS domain
+                                        </button>
+                                    </OverlayTrigger>
+                                    <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
+                                        <button>
+                                            Deploy DAPP to IPFS
+                                        </button>
+                                    </OverlayTrigger>
                                 </div>
                             </>
                         )}
