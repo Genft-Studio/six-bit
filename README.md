@@ -11,6 +11,8 @@ We considered implementing a few different types of generative art.
 ### Snowflakes
 Inpired by Vivian Wu's [snowflake generator](https://viviariums.com/projects/snowflake/), we considered building an NFT generator for animated snowflakes. With about 64 bits of entropy, we can create a large number of beautifully animated snowflakes, each of them unique.
 
+![Snowflake Generator](/public/images/growth.gif)
+
 ### Royal Titles
 We considered generating royal titles and a corresponding coat-of-arms. The titles are based on real historic titles and ones from fictional worlds. So you might end up buying a title like "The Guardian of York" or "Duke of Nogrod". Coats-of-arms would be generated from common elements typical of coats-of-arms with a randomized color scheme.
 
