@@ -20,7 +20,7 @@ function isZero(b) {
     return !result
 }
 
-export default function mine(salt, difficultyBits, dnaBits) {
+export default function mine(salt, difficultyBits, dnaBits, address) {
     const difficultyMask = Buffer.from(new Uint8Array(32))
     rshift.mut(difficultyMask, difficultyBits, 1)
 
@@ -34,7 +34,10 @@ export default function mine(salt, difficultyBits, dnaBits) {
     while (true){
         guess = randomBuffer();
 
-        const hashHex = Ethers.utils.solidityKeccak256(['string', 'uint256'], [salt, guess])
+        const hashHex = Ethers.utils.solidityKeccak256(
+            ['address', 'string', 'uint256'],
+            [address, salt, guess]
+        )
         hash = Buffer.from(hashHex.slice(2), 'hex')
         if (isZero(bitwiseAnd(hash, difficultyMask))) {
             break
@@ -47,19 +50,26 @@ export default function mine(salt, difficultyBits, dnaBits) {
     return {seed: guess, dna, time, hash, khs};
 }
 
-const onmessage = function(salt, difficultyBits, dnaBits){
-    var result = mine(salt, difficultyBits, dnaBits);
+const onmessage = function(salt, difficultyBits, dnaBits, address){
+    var result = mine(salt, difficultyBits, dnaBits, address);
     postMessage(result);
 }
 
-// let result = mine('$OWL', 16, 32)
-// console.log(result)
+// const testAddress = '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'
+// let result = mine('$OWL', 16, 32, testAddress)
+// console.log('seed:', result.seed.toString('hex'))
+// console.log('hash:', result.hash.toString('hex'))
+// console.log('dna:', result.dna.toString('hex'))
+// console.log('address:', '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'.slice(2))
+// console.log('difficulty bits:', 16)
+// console.log('dna bits:', 32)
+// console.log('salt: $OWL')
 
 
-// Test output
-// Diffculty: 16
-// Dna: 32
-// Salt: "$OWL"
-// Seed: 8a0e365a30cf850dd92f5e82c017b420bdcc9569ba4e12f3bde23567ba5077a1
-// Hash: 0000551268ed3bd170f482396cbd06f9b5122517d7812c8d2561a80106da6873
-// DNA: 06da6873
+// seed: e6b2d7a64491e7544051cb9906851bdc2258944d8651c7fbd2b90a2eae8c6600
+// hash: 000092402e1010955f5fbdde21834684afa23a0dcaf065b704e12a581d09d748
+// dna: 1d09d748
+// address: 534Eb19E729E955308e5A9c37c90d4128e0F450F
+// difficulty bits: 16
+// dna bits: 32
+// salt: $OWL
