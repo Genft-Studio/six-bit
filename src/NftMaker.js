@@ -211,7 +211,7 @@ function NftMaker() {
                                     </OverlayTrigger>
                                     <OverlayTrigger trigger="click" placement="bottom" overlay={todoPopover}>
                                         <button>
-                                            Deploy DAPP to IPFS
+                                            Deploy minter DAPP to IPFS
                                         </button>
                                     </OverlayTrigger>
                                 </div>
