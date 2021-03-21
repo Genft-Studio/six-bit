@@ -4,11 +4,13 @@ import { ethers } from "ethers";
 import gashaponFactoryAbi from "./abis/GashaponFactory.json";
 
 function NftMinter() {
+    const localStorageKey = "saved-art"
     const [provider, setProvider] = useState(null)
     const [signer, setSigner] = useState(null)
     const [collectionCid, setCollectionCid] = useState(null)
     const [collectionAddress, setCollectionAddress] = useState(null)
     const [collectionData, setCollectionData] = useState(null)
+    const [savedArt, setSavedArt] = useState([])
 
     // TODO: Pull collection contract address from url if present, for easy linking
 
@@ -46,6 +48,14 @@ function NftMinter() {
             averageDifficulty: "16",
             nextPrice: "0.1 ETH",
         })
+
+        // load saved data from localstorage for demo
+        // TODO: load this data from IPFS
+        let savedArtTmp = JSON.parse(localStorage.getItem(localStorageKey));
+        console.log("savedArtTmp:", savedArtTmp)
+        if (!_.isEmpty(savedArtTmp)) {
+            setSavedArt(savedArtTmp)
+        }
     }, [])
 
 
@@ -68,6 +78,21 @@ function NftMinter() {
                                 NFT Collection Contract Address:
                                 <input name="collectionAddressInput" />
                             </>
+                        )}
+
+                        {!_.isEmpty(savedArt) && (
+                            <div>
+                                {savedArt.map((art, index) => {
+                                    const cid = art.cid
+                                    return (
+                                        <span key={index + cid}>
+                                            {/*{cid.substring(0,23)}.....{cid.substring(cid.length-23, cid.length)}<br />*/}
+                                            <img src={art.png} alt="" width="100px" />
+                                        </span>
+                                    )
+                                })}
+                            </div>
+
                         )}
 
                         {!_.isNull(collectionAddress) && (

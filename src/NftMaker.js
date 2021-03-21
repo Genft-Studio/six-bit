@@ -79,6 +79,7 @@ function NftMaker() {
         console.log("Request to launch collection")
         setLaunchStatus("uploading")
         let directoryData = []
+        // TODO: uploaded png files don't seem to be rendered correctly, just seeing white squares, investigate...
         selectedArt.map((index) => {
             console.log("index", index)
             directoryData.push(new File([savedArt[index].data], "data/"+index+".txt"))
@@ -161,8 +162,11 @@ function NftMaker() {
                                 <h3>Token Symbol:</h3>
                                 <input name="tokenSymbol" />
 
+                                <h3>Starting Price (ETH):</h3>
+                                <input name="initialPrice" defaultValue={0.01} />
+
                                 <h3>Minimum Difficulty Bits:</h3>
-                                <input name="minimumDifficultyBits" type="number" />
+                                <input name="minimumDifficultyBits" type="number" defaultValue={16} />
 
                                 <h3>Dna Bit Length:</h3>
                                 <input name="dnaBitLength" type="number" />
