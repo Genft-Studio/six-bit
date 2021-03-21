@@ -1,4 +1,4 @@
-# Gashaphon
+# Gashapon
 
 [Gashapon](https://en.wikipedia.org/wiki/Gashapon) (ガシャポン) are toys that are dispensed from vending machine in a plastic capsule.
 
@@ -7,7 +7,8 @@
 This project enables artists to create an NFT vending machine that dispenses generative art. In order to generate an NFT, a proof-of-work puzzle must be solved. The more work you do, the more 'rare' the generated NFT is. We also added a unique economic twist.
 
 ## Generative Art
-We considered implementing a few different types of generative art.
+We considered implementing a few different types of generative art:
+
 ### Snowflakes
 Inpired by Vivian Wu's [snowflake generator](https://viviariums.com/projects/snowflake/), we considered building an NFT generator for animated snowflakes. With about 64 bits of entropy, we can create a large number of beautifully animated snowflakes, each of them unique.
 
