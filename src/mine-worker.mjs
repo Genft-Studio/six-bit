@@ -7,7 +7,7 @@ function randomBuffer(){
     for(var i = 0; i < 32; i++){
         x[i] = Math.floor(Math.random() * 256);
     }
-    return Buffer.from(x);
+    return x;
 }
 
 function isZero(b) {

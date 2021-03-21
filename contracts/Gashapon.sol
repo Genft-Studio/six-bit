@@ -17,8 +17,6 @@ contract Gashapon is ERC721, Ownable {
     uint256 public nextPrice;
     uint8 priceIncreasePercentage;
 
-    bytes32 public debug; // TODO remove me
-
     struct Token {
         bytes32 dna;
         string name;
@@ -39,7 +37,7 @@ contract Gashapon is ERC721, Ownable {
         uint8 _priceIncreasePercentage
     ) public ERC721(_tokenName, _tokenSymbol)
     {
-        // TODO set the starting price, the price escalation factor, artist commission
+        // TODO set the artist commission
         difficulty1Target = 2 ** (256 - uint256(_minimumDifficultyBits)) - 1;
         dnaBitLength = _dnaBitLength;
         nextPrice = _initialPrice;
@@ -56,12 +54,10 @@ contract Gashapon is ERC721, Ownable {
         // Increase the next price
         nextPrice = msg.value + (msg.value * priceIncreasePercentage / 100);
 
-        // TODO verify that enough funds were submitted
         require(!nameExists(_name), 'name must be unique');
 
-        bytes32 work = keccak256(abi.encode(msg.sender, symbol(), _seed));
-        debug = work;  // TODO Remove me
-        // FIXME require(uint256(work) <= difficulty1Target, 'not enough work');
+        bytes32 work = keccak256(abi.encodePacked(msg.sender, symbol(), _seed));
+        require(uint256(work) <= difficulty1Target, 'not enough work');
 
         bytes32 dna = bytes32(uint256(work) % 2 ** uint256(dnaBitLength));
         uint256 difficulty = uint256(difficulty1Target) / uint256(work);
@@ -81,8 +77,6 @@ contract Gashapon is ERC721, Ownable {
 
         return newId;
     }
-
-    // TODO no transfer of unproven tokens
 
     // TODO burn to get price of last sold less artist commission
 
