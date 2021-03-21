@@ -46,7 +46,7 @@ contract Gashapon is ERC721, Ownable {
         priceIncreasePercentage = _priceIncreasePercentage;
     }
 
-    function mintToy(
+    function mint(
         uint256 _seed,
         string memory _name,
         string memory _tokenUri
