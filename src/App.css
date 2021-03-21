@@ -95,6 +95,10 @@ h1 {
   font-family: 'pixelar', mono space, sans-serif;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .file-directory {
   border: 4px solid #222222;
   padding: 5px 5px 40px 5px;
@@ -112,6 +116,7 @@ h1 {
   padding-left: 10px;
   padding-right: 10px;
   border: 4px solid transparent;
+  cursor: pointer;
 }
 .file-directory li:hover,
 .file-directory li.current:hover{
@@ -126,8 +131,15 @@ h1 {
 }
 .file-directory li img {
   margin: 4px 10px 0 0;
+
+  image-rendering: pixelated;
+  -webkit-transition: transform 0.75s;
+  transition: transform 0.75s;
 }
 
+.file-directory li:hover img {
+  transform: scale(3);
+}
 
 /*** Some page style elements come from https://mooncatrescue.com/ ***/
 

@@ -20,13 +20,24 @@
     color: #eeeeee;
 }
 
+label {
+    font-size: 1.5em;
+}
+
 input.color {
     width: 100px;
     margin-right: 5px;
+    cursor: pointer;
+    color: transparent;
 }
 
 input[type=number] {
     width: 80px;
+}
+
+input[type=checkbox] {
+    width: 20px;
+    height: 20px;
 }
 
 .row {

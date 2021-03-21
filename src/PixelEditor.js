@@ -167,13 +167,6 @@ function drawCanvas(array) {
         return array
     }
 
-    /*
-    const handleRedraw = () => {
-        // TODO: Remove Redraw button
-        // drawCanvas(a)
-    }
-     */
-
     const handleRandomizePalette = () => {
         generateColorPalette()
         // drawCanvas(a)
@@ -618,6 +611,7 @@ function drawCanvas(array) {
 
     return (
         <div className="App">
+            <h1 className="text-center">Pixel Art Editor</h1>
 
             <div id="canvas" className={grid ? "grid": ""} onContextMenu={() => {return false}}>
                 {a.map((row, rowIndex) => {
@@ -649,51 +643,52 @@ function drawCanvas(array) {
             </div>
 
             <input id="c1" type="radio" name="color" value="1" checked={currentColor === "1"} onChange={handleColorSelect} />
-            <input className="color" id="color1" value={color1} onChange={e => setColor1(e.target.value)} style={{backgroundColor: "#" + color1}} />
+            <input readOnly className="color" id="color1" value={color1} onClick={() => setCurrentColor("1")} onChange={e => setColor1(e.target.value)} style={{backgroundColor: "#" + color1}} />
 
             <input id="c2" type="radio" name="color" value="2" checked={currentColor === "2"} onChange={handleColorSelect} />
-            <input className="color" id="color2" value={color2} onChange={e => setColor2(e.target.value)} style={{backgroundColor: "#" + color2}} />
+            <input readOnly className="color" id="color2" value={color2} onClick={() => setCurrentColor("2")} onChange={e => setColor2(e.target.value)} style={{backgroundColor: "#" + color2}} />
 
             <input id="c3" type="radio" name="color" value="3" checked={currentColor === "3"} onChange={handleColorSelect} />
-            <input className="color" id="color3" value={color3} onChange={e => setColor3(e.target.value)} style={{backgroundColor: "#" + color3}} />
+            <input readOnly className="color" id="color3" value={color3} onClick={() => setCurrentColor("3")} onChange={e => setColor3(e.target.value)} style={{backgroundColor: "#" + color3}} />
 
             <input id="c4" type="radio" name="color" value="4" checked={currentColor === "4"} onChange={handleColorSelect} />
-            <input className="color" id="color4" value={color4} onChange={e => setColor4(e.target.value)} style={{backgroundColor: "#" + color4}} />
+            <input readOnly className="color" id="color4" value={color4} onClick={() => setCurrentColor("4")} onChange={e => setColor4(e.target.value)} style={{backgroundColor: "#" + color4}} />
 
             <input id="c5" type="radio" name="color" value="5" checked={currentColor === "5"} onChange={handleColorSelect} />
-            <input className="color" id="color5" value={color5} onChange={e => setColor5(e.target.value)} style={{backgroundColor: "#" + color5}} />
+            <input readOnly className="color" id="color5" value={color5} onClick={() => setCurrentColor("5")} onChange={e => setColor5(e.target.value)} style={{backgroundColor: "#" + color5}} />
 
             {/*<input id="c6" type="radio" name="color" value="6" checked={currentColor === "6"} onChange={handleColorSelect} />*/}
-            {/*<input className="color" id="color6" value={color6} onChange={e => setColor6(e.target.value)} style={{backgroundColor: "#" + color6}} />*/}
-            <div>
+            {/*<input readOnly className="color" id="color6" value={color6} onChange={e => setColor6(e.target.value)} style={{backgroundColor: "#" + color6}} />*/}
+
+            <button id="palette"onClick={handleRandomizePalette}>
+                Random Palette
+            </button>
+            <input name="grid" type="checkbox" id="grid" checked={grid} onChange={e => setGrid(e.target.checked)} />
+            <label htmlFor="grid">Grid</label>
+            <br />
                 <input id="iw" type="number" value={iw} onChange={e => setIw(e.target.value)} />
                 <input id="ih" type="number" value={ih} onChange={e => setIh(e.target.value)} />
                 <button id="reset" onClick={handleReset}>
-                    ⊘ Reset
+                    ⊘ Clear
                 </button>
+                {/*
                 <button id="print" onClick={handlePrint}>
                     ↓ Print
                 </button>
                 <button id="read" onClick={handleRead}>
                     ↑ Read
                 </button>
-                {/*<button id="redraw" onClick={handleRedraw}>*/}
-                {/*    ↺ Redraw*/}
-                {/*</button>*/}
-                <button id="palette"onClick={handleRandomizePalette}>
-                    Randomize Palette
-                </button>
-                <input name="grid" type="checkbox" id="grid" checked={grid} onChange={e => setGrid(e.target.checked)} />
-                <label htmlFor="grid">Grid</label>
+                */}
+                {/*
                 <button id="png" onClick={handlePng}>
                     PNG
                 </button>
+                */}
                 {/*<input id="pngPixelSize" type="number" value={pngPixelSize} onChange={e => setPngPixelSize(e.target.value)} />*/}
 
                 <button id="saveFile" onClick={handleSaveFile}>
-                    Save File
+                    Save
                 </button>
-            </div>
             {/*
             <div>
                 Collection Name:
@@ -703,7 +698,7 @@ function drawCanvas(array) {
                 </button>
             </div>
             */}
-            <div className="file-directory">
+            <div className="file-directory" style={{color: "#" + color5}}>
                 {/*
                 {_.isEmpty(props.spaceStorage) && (
                     <p>Loading user data...</p>
@@ -757,14 +752,19 @@ function drawCanvas(array) {
                     </>
                 )}
             </div>
+            {/*
             <div>
                 <textarea id="out" value={out} onChange={e => setOut(e.target.value)} />
             </div>
-            <img id="png-out" style={{border:"2px solid"}} alt="" src={pngSrc} />
+            */}
+            {/*<img id="png-out" style={{border:"2px solid"}} alt="" src={pngSrc} />*/}
             <div id="license"
                  style={{margin: "20px", padding: "10px", border: "1px solid #ccc", fontSize: "0.5em", color: "#555"}}>
                 <h2>License</h2>
-                <p>Copyright © 2021 Ponderware Ltd.</p>
+                <p>
+                    Some parts Copyright © 2021 Endowl Inc.<br />
+                    Some parts Copyright © 2021 Ponderware Ltd.
+                </p>
 
                 <p>Permission is hereby granted, free of charge, to any
                     person obtaining a copy of this software and
