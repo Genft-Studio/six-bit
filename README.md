@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+# Gashaphon
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[Gashapon](https://en.wikipedia.org/wiki/Gashapon) (ガシャポン) are toys that are dispensed from vending machine in a plastic capsule.
 
-## Available Scripts
+![Gashapon](/public/images/Gachapon.jpg)
 
-In the project directory, you can run:
+This project enables artists to create an NFT vending machine that dispenses generative art. In order to generate an NFT, a proof-of-work puzzle must be solved. The more work you do, the more 'rare' the generated NFT is. We also added a unique economic twist.
 
-### `npm start`
+## Generative Art
+We considered implementing a few different types of generative art.
+### Snowflakes
+Inpired by Vivian Wu's [snowflake generator](https://viviariums.com/projects/snowflake/), we considered building an NFT generator for animated snowflakes. With about 64 bits of entropy, we can create a large number of beautifully animated snowflakes, each of them unique.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Royal Titles
+We considered generating royal titles and a corresponding coat-of-arms. The titles are based on real historic titles and ones from fictional worlds. So you might end up buying a title like "The Guardian of York" or "Duke of Nogrod". Coats-of-arms would be generated from common elements typical of coats-of-arms with a randomized color scheme.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### MoonOwls
+Inspired by [Moon Cat Rescue](https://mooncatrescue.com/), we decided to create a Moon Owl generator. As part of the system, we also built a template generator so that other artist could create their own variation of cute, pixelated characters and set up a vending machine to dispense them.
 
-### `npm test`
+## The Economics
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Rarity
+Like MoonCats you have to mine for MoonOwls. What's different is that the longer you mine, the higher the 'level' of the MoonOwl you will get. We built a miner where you can specify the minimum rarity of the MoonOwl you want to buy. The more rare, the longer you have to mine. It doesn't cost any more to buy a rarer MoonOwl you just have to be willing to wait more than a minute or two to mine it. If you wait hours or days, you will find extremely rare MoonOwls. But if you wait too long to buy, you might lose the opportunity to buy it at at today's price (see Escalating Price).
 
-### `npm run build`
+### Escalating Price
+The price of each new MoonOwl is higher than the price of the last MoonOwl. The price starts at a fairly low amount (say .001 Ether). Each additional MoonOwl costs a set percentage more that the last one that was sold. The longer you wait to to buy one, the more you will have to pay.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Burn baby burn
+If you own a sick MoonOwl, can cash in on Raribles, or SuperRare, or maybe wrap it in an NFTX index fund, sell shares in it through NIFTEX, rent it to Decentraland Art Gallery, or just proudly display it on your ENS powered website.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+On the other hand, if the MoonOwl that you got isn't one of  crème de la crème that are fetching top dollar, you can still show off your one-of-a-kind, cute little moon owl...or you can burn it and get a percentage of the last price that was last paid for a MoonOwl from the vending machine. So say you bought yours for .001 Ether and a few hundred have been sold since then. Maybe the last one that was sold went for 0.1 Ether. You can choose to burn your MoonOwl and collect 0.09 ether.
