@@ -3,6 +3,11 @@
   src: url('./fonts/pixelar_regular-webfont.woff2'), url('./fonts/pixelar_regular-webfont.woff');
 }
 
+@font-face {
+  font-family: 'screen1';
+  src: url('./fonts/MunroSmall.ttf');
+}
+
 html {
   background-color: #282c34;
   color: white;
@@ -81,6 +86,17 @@ nav li a:hover {
   to {
     transform: rotate(360deg);
   }
+}
+
+.App-container {
+  background-color: #282c34;
+  /*min-height: 100vh;*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /*font-size: calc(10px + 2vmin);*/
+  color: white;
 }
 
 input {
@@ -184,7 +200,10 @@ h1 {
   text-decoration: none;
 }
 
-
+input.address {
+  width: 100%;
+  text-align: center
+}
 
 
 /*** Some page style elements come from https://mooncatrescue.com/ ***/
@@ -232,3 +251,25 @@ button.nav{
 button.select{
   background-color: orange;
 }
+
+select{
+  padding: 10px 20px;
+  margin: 10px;
+  font-size: 1.3em;
+  font-family: screen1;
+  border: none;
+  color: #ffffff;
+  background-color: orange;
+  box-shadow: 8px 8px 0px 0px #444444;
+  cursor: pointer;
+  outline: none;
+
+}
+
+/*select:hover {*/
+/*  position: relative;*/
+/*  top: 3px;*/
+/*  left: 3px;*/
+/*  box-shadow: 5px 5px 0px 0px #444444;*/
+
+/*}*/

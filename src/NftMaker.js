@@ -5,12 +5,13 @@ import { ethers } from "ethers";
 import gashaponFactoryDetails from "./abis/GashaponFactory.json"
 import {OverlayTrigger, Popover} from "react-bootstrap";
 
-// TODO: Keep GashaponFactory.json up to date, copy from build/contracts/...
+// TODO: Keep ./abis/GashaponFactory.json up to date, copy from ../build/contracts/...
 
 function NftMaker() {
     // const gashaponFactoryAddress = ""  // TODO: Fill this in!
     const gashaponFactoryAddress = "0x0B1Aa0B38694D39FE293D3e210A6eb955e237786"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
-    const localStorageKey = "saved-art"
+    const localStorageMintersKey = "minters"
+    const localStorageArtKey = "saved-art"
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
     const [savedArt, setSavedArt] = useState([])
     const [nftStorageClient, setNftStorageClient] = useState(null)
@@ -86,7 +87,7 @@ function NftMaker() {
         console.log("Request to launch collection")
         setLaunchStatus("uploading")
         let directoryData = []
-        // TODO: uploaded png files don't seem to be rendered correctly, just seeing white squares, investigate...
+        // TODO: uploaded png files don't seem to be rendered correctly, just seeing white squares, investigate and fix...
         selectedArt.map((index) => {
             // console.log("index", index)
             directoryData.push(new File([savedArt[index].data], "data/"+index+".txt"))
@@ -119,8 +120,6 @@ function NftMaker() {
                 console.log("Detected creation of new Gashapon child contract by current user: ", child)
 
                 // Save record of created contract
-                const localStorageMintersKey = "minters"
-
                 let minters = JSON.parse(localStorage.getItem(localStorageMintersKey))
                 if(_.isNull(minters) || !_.isArray(minters)) {
                     minters = []
@@ -167,7 +166,7 @@ function NftMaker() {
         const client = new NFTStorage({ token: nftStorageKey })
         setNftStorageClient(client)
 
-        let savedArtTmp = JSON.parse(localStorage.getItem(localStorageKey));
+        let savedArtTmp = JSON.parse(localStorage.getItem(localStorageArtKey));
         console.log("savedArtTmp:", savedArtTmp)
         if (!_.isEmpty(savedArtTmp)) {
             setSavedArt(savedArtTmp)
