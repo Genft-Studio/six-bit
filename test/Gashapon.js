@@ -13,8 +13,10 @@ contract('Gashapon', async accounts => {
         const testName = "My awesome owl!"
         const tokenURI = "fake://Uri"
 
-        const child = await factory.createChild("Gashapon", "$OWL", 16, 32, .001 * 10 ** 18, 5,
+        const child = await factory.createChild("Gashapon", "$OWL", 16, 32, 10 ** 15, 10 ** 14, 50,
             'https://bafybeiawde3rbrxyhv2yelitx2awslwbjmfkxsqmjfx44hcv56dwf77f2m.ipfs.dweb.link/')
+
+        await child.setArtistAddress(accounts[1]) // FIXME
 
         console.log('Gashapon instance address:', child.logs[0].args._address)
         const instance = await Gashapon.at(child.logs[0].args._address)

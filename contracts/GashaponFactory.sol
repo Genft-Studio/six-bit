@@ -15,14 +15,13 @@ contract GashaponFactory {
     // TODO: Add field for IPFS path to data files
 
     function createChild(
-    //        string memory _tokenName,
-    //        string memory _tokenSymbol,
         string calldata _tokenName,
         string calldata _tokenSymbol,
         uint8 _minimumDifficultyBits,
         uint8 _dnaBitLength,
-        uint256 _initialPrice,
-        uint8 _priceIncreasePercentage,
+        uint256 _firstPrice,
+        uint256 _priceIncrement,
+        uint8 _burnRefundPercentage,
         string calldata _cidRoot
     ) external {
         Gashapon child = new Gashapon(
@@ -30,8 +29,9 @@ contract GashaponFactory {
             _tokenSymbol,
             _minimumDifficultyBits,
             _dnaBitLength,
-            _initialPrice,
-            _priceIncreasePercentage,
+            _firstPrice,
+            _priceIncrement,
+            _burnRefundPercentage,
             _cidRoot
         );
         children.push(child);

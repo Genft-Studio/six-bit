@@ -10,22 +10,25 @@ contract Gashapon is ERC721, Ownable {
     using SafeMath for uint256;
     using Strings for string;
 
+    event TokenMinted(uint256 amountPaid, uint256 dna, address owner);
+    event TokenBurned(uint256 amountRefunded, uint256 dna, address owner);
+
     uint256 public difficulty1Target;
-    uint256 public totalDifficulty;
     uint8 public dnaBitLength;
     string public cidRoot;
-
-    uint256 public nextPrice;
-    uint8 priceIncreasePercentage;
+    uint256 public firstPrice;
+    uint256 public priceIncrement;
+    uint8 public burnRefundPercentage;
+    address payable public artistAddress;
 
     struct Token {
-        bytes32 dna;
+        uint256 dna;
         string name;
         uint256 difficulty;
     }
 
-    mapping(bytes32 => bool) byDna; // dna must be unique
-    mapping(string => bool) byName; // Token names must be unique
+    mapping(uint256 => uint256) byDna; // dna must be unique
+    mapping(string => uint256) byName; // Token names must be unique
 
     Token[] public tokens;
 
@@ -34,77 +37,119 @@ contract Gashapon is ERC721, Ownable {
         string memory _tokenSymbol,
         uint8 _minimumDifficultyBits,
         uint8 _dnaBitLength,
-        uint256 _initialPrice,
-        uint8 _priceIncreasePercentage,
+        uint256 _firstPrice,
+        uint256 _priceIncrement,
+        uint8 _burnRefundPercentage,
         string memory _cidRoot
-    ) public ERC721(_tokenName, _tokenSymbol)
+    ) public ERC721(_tokenName, _tokenSymbol) Ownable()
     {
-        // TODO set the artist commission
+        require(_burnRefundPercentage <= 100, "the burnRefundPercentage must be between 0 and 100");
+
         difficulty1Target = 2 ** (256 - uint256(_minimumDifficultyBits)) - 1;
         dnaBitLength = _dnaBitLength;
-        nextPrice = _initialPrice;
-        priceIncreasePercentage = _priceIncreasePercentage;
+        firstPrice = _firstPrice;
+        priceIncrement = _priceIncrement;
+        burnRefundPercentage = _burnRefundPercentage;
         cidRoot = _cidRoot;
+        artistAddress = payable(msg.sender);
+    }
+
+    function setArtistAddress(address payable newArtist_) public onlyOwner {
+        artistAddress = newArtist_;
     }
 
     function mint(
-        uint256 _seed,
-        string memory _name,
-        string memory _tokenUri
-    ) payable public returns (uint256) {
-        require(msg.value >= nextPrice, 'not enough paid');
+        uint256 seed_,
+        string memory name_,
+        string memory tokenUri_
+    ) payable public {
+        uint256 newTokenIndex = tokens.length;
 
-        // Increase the next price
-        nextPrice += (nextPrice * priceIncreasePercentage / 100);
+        uint price = _getMintPrice(newTokenIndex);
+        require(msg.value >= price, 'not enough paid');
+        require(!nameExists(name_), 'name must be unique');
 
-        require(!nameExists(_name), 'name must be unique');
-
-        bytes32 work = keccak256(abi.encodePacked(msg.sender, symbol(), _seed));
+        bytes32 work = keccak256(abi.encodePacked(msg.sender, symbol(), seed_));
         require(uint256(work) <= difficulty1Target, 'not enough work');
 
-        bytes32 dna = bytes32(uint256(work) % 2 ** uint256(dnaBitLength));
+        uint256 change = msg.value.sub(price);
+        artistAddress.transfer(msg.value.sub(change).sub(getBurnRefund()));
+        msg.sender.transfer(change);
+
+        uint256 dna = uint256(work) % 2 ** uint256(dnaBitLength);
         uint256 difficulty = uint256(difficulty1Target) / uint256(work);
 
-        totalDifficulty += difficulty;
-
-        byName[_name] = true;
-        byDna[dna] = true;
-
-        uint256 newId = tokens.length;
-
         tokens.push(
-            Token(dna, _name, difficulty)
+            Token(dna, name_, difficulty)
         );
-        _safeMint(msg.sender, newId);
-        _setTokenURI(newId, _tokenUri);
+        byName[name_] = newTokenIndex;
+        byDna[dna] = newTokenIndex;
 
-        return newId;
+        _safeMint(msg.sender, uint256(dna));
+        _setTokenURI(newTokenIndex, tokenUri_);
+
+        emit TokenMinted(price, dna, msg.sender);
     }
 
-    // TODO burn to get price of last sold less artist commission
+    function burn(uint256 dna_) public {
+        address owner = ERC721.ownerOf(dna_);
+        require(msg.sender == owner);
 
-    function dnaExists(bytes32 _dna) public view returns (bool) {
-        return uint256(_dna) != 0 && byDna[_dna];
+        uint256 burnRefund = _getBurnRefund(tokens.length);
+        uint256 tokenIndex = byDna[dna_];
+        Token memory token = tokens[tokenIndex];
+
+        delete byName[token.name];
+        delete byDna[dna_];
+        delete tokens[tokenIndex];
+
+        _burn(dna_);
+
+        msg.sender.transfer(burnRefund);
+
+        emit TokenBurned(burnRefund, dna_, owner);
     }
 
-    function nameExists(string memory _name) public view returns (bool) {
-        return bytes(_name).length != 0 && byName[_name];
+    // TODO is this needed?
+    function getMintPrice() public view returns(uint256) {
+        return _getMintPrice(tokens.length);
     }
 
-    function getTokenURI(uint256 tokenId) public view returns (string memory) {
-        return tokenURI(tokenId);
+    function _getMintPrice(uint256 tokenIndex_) private view returns(uint256) {
+        return firstPrice.add(priceIncrement.mul(tokenIndex_));
     }
 
-    function getAverageDifficulty() public view returns (uint256) {
-        return totalDifficulty / tokens.length;
+    // TODO is this needed?
+    function getBurnRefund() public view returns(uint256) {
+        return _getBurnRefund(tokens.length);
     }
 
-    function getTokenOverview(uint256 tokenId) public view returns (string memory, bytes32, uint256)
+    function _getBurnRefund(uint256 tokenIndex_) private view returns(uint256) {
+        return firstPrice
+            .add(priceIncrement.mul(tokenIndex_))
+            .mul(burnRefundPercentage)
+            .div(100);
+    }
+
+    function dnaExists(uint256 dna_) public view returns (bool) {
+        return byDna[dna_] != 0;
+    }
+
+    function nameExists(string memory name_) public view returns (bool) {
+        return byName[name_] != 0;
+    }
+
+    function getTokenURI(uint256 tokenId_) public view returns (string memory) {
+        return tokenURI(tokenId_);
+    }
+
+    function getTokenOverview(uint256 tokenId_) public view returns (string memory, uint256, uint256)
     {
+        uint256 tokenIndex = byDna[tokenId_];
         return (
-        tokens[tokenId].name,
-        tokens[tokenId].dna,
-        tokens[tokenId].difficulty
+            tokens[tokenIndex].name,
+            tokens[tokenIndex].dna,
+            tokens[tokenIndex].difficulty
         );
     }
 }
