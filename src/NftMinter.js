@@ -84,9 +84,10 @@ function NftMinter() {
             let data = {
                 name: await contractWithSigner.name(),
                 symbol: await contractWithSigner.symbol(),
-                nextPrice: await contractWithSigner.nextPrice(),
+                // nextPrice: await contractWithSigner.nextPrice(),
+                mintPrice: await contractWithSigner.getMintPrice(),
                 difficulty1Target: await contractWithSigner.difficulty1Target(),
-                totalDifficulty: await contractWithSigner.totalDifficulty(),
+                // totalDifficulty: await contractWithSigner.totalDifficulty(),
                 dnaBitLength: await contractWithSigner.dnaBitLength(),
                 cidRoot: await contractWithSigner.cidRoot()
             }
@@ -175,8 +176,8 @@ function NftMinter() {
                                 <h3 className="text-center">NFT Collection:</h3>
                                 <h1 className="text-center">"{collectionData.name}"</h1>
                                 Symbol: <strong>{collectionData.symbol}</strong><br/>
-                                Next Price: {ethers.utils.formatEther(collectionData.nextPrice)} ETH<br/>
-                                Total Difficulty: {collectionData.totalDifficulty.toString()}<br/>
+                                Next Mint Price: {ethers.utils.formatEther(collectionData.mintPrice)} ETH<br/>
+                                {/*Total Difficulty: {collectionData.totalDifficulty.toString()}<br/>*/}
                                 DNA Bit Length: {collectionData.dnaBitLength.toString()}<br />
                                 Difficulty Target: {collectionData.difficulty1Target.toString()}<br/>
                                 IPFS CID Root: <a href={ipfsGatewayUrl(collectionData.cidRoot)} target="_blank">{collectionData.cidRoot}</a><br />

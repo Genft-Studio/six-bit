@@ -9,7 +9,7 @@ import {OverlayTrigger, Popover} from "react-bootstrap";
 
 function NftMaker() {
     // const gashaponFactoryAddress = ""  // TODO: Fill this in!
-    const gashaponFactoryAddress = "0x0B1Aa0B38694D39FE293D3e210A6eb955e237786"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
+    const gashaponFactoryAddress = "0x47887959828AcCBf7A090D4006A569B20c5e638C"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const localStorageMintersKey = "minters"
     const localStorageArtKey = "saved-art"
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"
@@ -24,10 +24,11 @@ function NftMaker() {
 
     const [tokenName, setTokenName] = useState("")
     const [tokenSymbol, setTokenSymbol] = useState("")
-    const [initialPrice, setInitialPrice] = useState("0.01")
+    const [firstPrice, setFirstPrice] = useState("0.01")
     const [minimumDifficulty, setMinimumDifficulty] = useState("16")
     const [dnaBitLength, setDnaBitLength] = useState("4")
-    const [priceIncreasePercentage, setPriceIncreasePercentage] = useState("0")
+    const [priceIncrement, setPriceIncrement] = useState("0")
+    const [burnRefundPercentage, setBurnRefundPercentage] =  useState("0")
     const [cidRoot, setCidRoot] = useState("")
 
     const handleToggleArt = (e, index) => {
@@ -147,8 +148,9 @@ function NftMaker() {
                 tokenSymbol,
                 minimumDifficulty,
                 dnaBitLength,
-                ethers.utils.parseEther(initialPrice),
-                priceIncreasePercentage,
+                ethers.utils.parseEther(firstPrice),
+                priceIncrement,
+                burnRefundPercentage,
                 cid,
             )
         } catch (e) {
@@ -224,7 +226,7 @@ function NftMaker() {
                                 <input name="tokenSymbol" value={tokenSymbol} onChange={e => setTokenSymbol(e.target.value)} />
 
                                 <h3>Starting Price (ETH):</h3>
-                                <input name="initialPrice" value={initialPrice} onChange={e => setInitialPrice(e.target.value)} />
+                                <input name="initialPrice" value={firstPrice} onChange={e => setFirstPrice(e.target.value)} />
 
                                 <h3>Minimum Difficulty Bits:</h3>
                                 <input name="minimumDifficulty" type="number" value={minimumDifficulty} onChange={e => setMinimumDifficulty(e.target.value)} />
