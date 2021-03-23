@@ -36,6 +36,8 @@ contract GashaponFactory {
         );
         children.push(child);
         emit GashaponCreated(msg.sender, address(child));
+        // Set the caller of this factory to the owner of the new child contract
+        child.setArtistAddress(msg.sender);
     }
 
     // TODO: Check if it's necessary to declare this function (adapted from sample factory)

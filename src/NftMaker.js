@@ -9,7 +9,7 @@ import {OverlayTrigger, Popover} from "react-bootstrap";
 
 function NftMaker() {
     // const gashaponFactoryAddress = ""  // TODO: Fill this in!
-    const gashaponFactoryAddress = "0x47887959828AcCBf7A090D4006A569B20c5e638C"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
+    const gashaponFactoryAddress = "0x46EC9F97C48422Ca2d8EDd64F93EA421CbbbE36D"  // TODO: LOCAL DEV SERVER ADDRESS - Replace this with deployed address
     const localStorageMintersKey = "minters"
     const localStorageArtKey = "saved-art"
     const nftStorageKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnaXRodWJ8MTU5NzUxIiwiaXNzIjoibmZ0LXN0b3JhZ2UiLCJpYXQiOjE2MTYxODI3MTI2ODUsIm5hbWUiOiJTSVgtQklUIn0.zqSNtZNehlfluFHVtRipupGOnoq_09Lg2w6dIe9ec2Q"

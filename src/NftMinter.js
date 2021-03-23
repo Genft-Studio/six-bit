@@ -84,6 +84,7 @@ function NftMinter() {
             let data = {
                 name: await contractWithSigner.name(),
                 symbol: await contractWithSigner.symbol(),
+                artistAddress: await contractWithSigner.artistAddress(),
                 // nextPrice: await contractWithSigner.nextPrice(),
                 mintPrice: await contractWithSigner.getMintPrice(),
                 difficulty1Target: await contractWithSigner.difficulty1Target(),
@@ -176,6 +177,7 @@ function NftMinter() {
                                 <h3 className="text-center">NFT Collection:</h3>
                                 <h1 className="text-center">"{collectionData.name}"</h1>
                                 Symbol: <strong>{collectionData.symbol}</strong><br/>
+                                Artist: {collectionData.artistAddress}<br />
                                 Next Mint Price: {ethers.utils.formatEther(collectionData.mintPrice)} ETH<br/>
                                 {/*Total Difficulty: {collectionData.totalDifficulty.toString()}<br/>*/}
                                 DNA Bit Length: {collectionData.dnaBitLength.toString()}<br />
