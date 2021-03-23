@@ -9,7 +9,7 @@ import "./Gashapon.sol";
 contract GashaponFactory {
     Gashapon[] public children;
 
-    event GashaponCreated(address indexed _address);
+    event GashaponCreated(address indexed _from, address indexed _child);
     // event ChildCreated(address childAddress, uint data);
 
     // TODO: Add field for IPFS path to data files
@@ -35,7 +35,7 @@ contract GashaponFactory {
             _cidRoot
         );
         children.push(child);
-        emit GashaponCreated(address(child));
+        emit GashaponCreated(msg.sender, address(child));
     }
 
     // TODO: Check if it's necessary to declare this function (adapted from sample factory)
