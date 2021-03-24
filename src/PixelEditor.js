@@ -8,7 +8,7 @@ import _ from "lodash";
 // import ReadableString from './ReadableString'
 // import {Readable} from "stream";
 // import stringToStream from "string-to-stream"
-import Streamify from "streamify-string"
+// import Streamify from "streamify-string"
 import { NFTStorage, Blob } from 'nft.storage'
 
 function PixelEditor(props) {
@@ -400,9 +400,9 @@ function PixelEditor(props) {
         // dataBuffer.push("Readable buffer test")
         // dataBuffer.push(null)
 
-        const dataBuffer = Streamify(dataString)
+        // const dataBuffer = Streamify(dataString)
 
-        console.log("dataBuffer", dataBuffer)
+        // console.log("dataBuffer", dataBuffer)
 
         console.log("DEBUG: before addItems")
 
