@@ -4,6 +4,7 @@ import {ethers} from "ethers";
 import gashaponFactoryAbi from "./abis/GashaponFactory.json";
 import {Popover, OverlayTrigger} from 'react-bootstrap'
 import gashaponDetails from "./abis/Gashapon.json";
+import mine from "./mine-worker.mjs";
 
 // TODO: Keep ./abis/Gashapon.json up to date, copy from ../build/contracts/...
 
@@ -51,6 +52,19 @@ function NftMinter() {
             console.log("ERROR: Connecting to Ethereum wallet: ", e.toString())
             return
         }
+    }
+
+    const handleSearch = async () => {
+        const testAddress = '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'
+        let result = mine('$OWL', 16, 32, testAddress)
+        console.log('seed:', result.seed.toString('hex'))
+        console.log('hash:', result.hash.toString('hex'))
+        console.log('dna:', result.dna.toString('hex'))
+        console.log('address:', '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'.slice(2))
+        console.log('difficulty bits:', 16)
+        console.log('dna bits:', 32)
+        console.log('salt: $OWL')
+
     }
 
     useEffect(() => {
@@ -204,7 +218,7 @@ function NftMinter() {
                                 Difficulty Target: {collectionData.difficulty1Target.toString()}<br/>
                                 IPFS CID Root: <a href={ipfsGatewayUrl(collectionData.cidRoot)} target="_blank">{collectionData.cidRoot}</a><br />
 
-                                <button>
+                                <button onClick={handleSearch}>
                                     Search for NFTs
                                 </button>
                                 <br/>

@@ -1,6 +1,10 @@
 import Ethers from "ethers"
-import pkg from 'bitwise-buffer';
-const { xor, and: bitwiseAnd, or, nor, not, lshift, rshift } = pkg;
+// import pkg from 'bitwise-buffer';
+// const { xor, and: bitwiseAnd, or, nor, not, lshift, rshift } = pkg;
+import bitwiseAnd from 'bitwise-buffer/src/and'
+import lshift from 'bitwise-buffer/src/leftShift'
+import rshift from 'bitwise-buffer/src/rightShift'
+// var Buffer = require('buffer/').Buffer  // note: the trailing slash is important!
 
 function randomBuffer(){
     var x = new Uint8Array(32);
