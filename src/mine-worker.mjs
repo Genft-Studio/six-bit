@@ -1,17 +1,14 @@
 import Ethers from "ethers"
-// import pkg from 'bitwise-buffer';
-// const { xor, and: bitwiseAnd, or, nor, not, lshift, rshift } = pkg;
-import bitwiseAnd from 'bitwise-buffer/src/and'
-import lshift from 'bitwise-buffer/src/leftShift'
-import rshift from 'bitwise-buffer/src/rightShift'
-// var Buffer = require('buffer/').Buffer  // note: the trailing slash is important!
+import and from 'bitwise-buffer/src/and.js'
+import lshift from 'bitwise-buffer/src/leftShift.js'
+import rshift from 'bitwise-buffer/src/rightShift.js'
 
 function randomBuffer(){
     var x = new Uint8Array(32);
     for(var i = 0; i < 32; i++){
         x[i] = Math.floor(Math.random() * 256);
     }
-    return x;
+    return Buffer.from(x);
 }
 
 function isZero(b) {
@@ -26,16 +23,16 @@ function isZero(b) {
 
 export default function mine(salt, difficultyBits, dnaBits, address) {
     const difficultyMask = Buffer.from(new Uint8Array(32))
-    rshift.mut(difficultyMask, difficultyBits, 1)
+    rshift.mutate(difficultyMask, difficultyBits, 1)
 
     const dnaMask = Buffer.from(new Uint8Array(32))
-    lshift.mut(dnaMask, dnaBits, 1)
+    lshift.mutate(dnaMask, dnaBits, 1)
 
     let guess, hash;
-    var time = Date.now();
     var count = 0;
     var startTime = Date.now();
     while (true){
+        // if (!((++count) % 1000)) console.log(count)
         guess = randomBuffer();
 
         const hashHex = Ethers.utils.solidityKeccak256(
@@ -43,15 +40,15 @@ export default function mine(salt, difficultyBits, dnaBits, address) {
             [address, salt, guess]
         )
         hash = Buffer.from(hashHex.slice(2), 'hex')
-        if (isZero(bitwiseAnd(hash, difficultyMask))) {
+        if (isZero(and.pure(hash, difficultyMask))) {
             break
         }
     }
     var rawTime = (Date.now() - startTime)/1000
     var time = Math.floor(rawTime);
     var khs = Math.round(count/rawTime/1000);
-    var dna = bitwiseAnd(hash, dnaMask).slice(-Math.ceil(dnaBits / 8))
-    return {seed: guess, dna, time, hash, khs};
+    var dna = and.pure(hash, dnaMask).slice(-Math.ceil(dnaBits / 8))
+    return {seed: guess, dna, time, hash, hashes: count, khs, difficultyBits, dnaBits, salt};
 }
 
 const onmessage = function(salt, difficultyBits, dnaBits, address){
@@ -61,13 +58,17 @@ const onmessage = function(salt, difficultyBits, dnaBits, address){
 
 // const testAddress = '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'
 // let result = mine('$OWL', 16, 32, testAddress)
+//
 // console.log('seed:', result.seed.toString('hex'))
 // console.log('hash:', result.hash.toString('hex'))
 // console.log('dna:', result.dna.toString('hex'))
 // console.log('address:', '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'.slice(2))
-// console.log('difficulty bits:', 16)
-// console.log('dna bits:', 32)
-// console.log('salt: $OWL')
+// console.log('difficulty bits:', result.difficultyBits)
+// console.log('dna bits:', result.dnaBits)
+// console.log('salt:', result.salt)
+// console.log('duration:', result.time)
+// console.log('hashes:', result.hashes)
+// console.log(`Speed: ${result.khs}kh/s`)
 
 
 // seed: e6b2d7a64491e7544051cb9906851bdc2258944d8651c7fbd2b90a2eae8c6600
