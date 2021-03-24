@@ -87,20 +87,30 @@ function NftMaker() {
     const handleLaunchCollection = async () => {
         console.log("Request to launch collection")
         setLaunchStatus("uploading")
-        let directoryData = []
+        // let directoryData = []
         // TODO: uploaded png files don't seem to be rendered correctly, just seeing white squares, investigate and fix...
+        let data = {
+            assets: [],
+            meta: {
+                // TODO?
+            }
+        }
         selectedArt.map((index) => {
             // console.log("index", index)
-            directoryData.push(new File([savedArt[index].data], "data/"+index+".txt"))
-            directoryData.push(new File([savedArt[index].png], "png/"+index+".png"))
+            // directoryData.push(new File([savedArt[index].data], "data/"+index+".txt"))
+            // directoryData.push(new File([savedArt[index].png], "png/"+index+".png"))
+            data.assets.push(savedArt[index].data)
         })
 
         let cid
         try {
-            cid = await nftStorageClient.storeDirectory(directoryData)
+            const content = new Blob([JSON.stringify(data)])
+            cid = await nftStorageClient.storeBlob(content)
+
+            // cid = await nftStorageClient.storeDirectory(directoryData)
             setCidRoot(cid)
             console.log("cid: ", cid)
-            console.log("Assets stored at: " + ipfsGatewayUrl(cid))
+            console.log("Asset data stored at: " + ipfsGatewayUrl(cid))
         } catch (e) {
             console.log("ERROR: Problem uploading to nft.storage: ", e.toString())
             setLaunchStatus("error")

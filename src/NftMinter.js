@@ -17,6 +17,7 @@ function NftMinter() {
     const [minted, setMinted] = useState(false)
     const [myMinters, setMyMinters] = useState([])
     const [gashaponContract, setGashaponContract] = useState(null)
+    const [assetData, setAssetData] = useState(null)
 
     // TODO: Pull collection contract address from url if present, for easy linking
 
@@ -75,13 +76,15 @@ function NftMinter() {
     const loadCollection = async (address) => {
         console.log("Loading collection: ", address)
 
+        let data
         try {
             // Setup Gashapon contract model
             const contract = new ethers.Contract(address, gashaponDetails.abi, provider)
             const contractWithSigner = contract.connect(signer)
             setGashaponContract(contractWithSigner)
 
-            let data = {
+            // Fetch data from contract
+            data = {
                 name: await contractWithSigner.name(),
                 symbol: await contractWithSigner.symbol(),
                 artistAddress: await contractWithSigner.artistAddress(),
@@ -99,6 +102,22 @@ function NftMinter() {
             return
         }
 
+        // Fetch assets from IPFS gateway
+        try {
+            const assetUrl = ipfsGatewayUrl(data.cidRoot)
+            console.log("Fetching assets from IPFS with gateway url: ", assetUrl)
+            let response = await fetch(assetUrl);
+            if (response.ok) { // if HTTP-status is 200-299 get the response body
+                let json = await response.json();
+                setAssetData(json)
+                console.log(json)
+            } else {
+                console.log("HTTP-Error: " + response.status);
+            }
+        } catch (e) {
+            console.log("ERROR: Fetching data from IPFS gateway: ", e.toString())
+            return
+        }
     }
 
     const handleDeselectCollection = () => {
@@ -183,6 +202,19 @@ function NftMinter() {
                                 DNA Bit Length: {collectionData.dnaBitLength.toString()}<br />
                                 Difficulty Target: {collectionData.difficulty1Target.toString()}<br/>
                                 IPFS CID Root: <a href={ipfsGatewayUrl(collectionData.cidRoot)} target="_blank">{collectionData.cidRoot}</a><br />
+
+                                {!_.isNull(assetData) && (
+                                    <pre className="asset-preview">
+                                        {assetData.assets.map(asset => {
+                                            return (
+                                                <>
+                                                    {asset + "\n\n"}
+                                                </>
+                                            )
+                                        })}
+                                    </pre>
+                                )}
+
 
                                 <button>
                                     Search for NFTs
