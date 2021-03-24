@@ -205,9 +205,15 @@ input.address {
   text-align: center
 }
 
+.ascii-asset-preview div {
+  display: inline-block;
+  padding: 0 10px 0 10px
+}
 
-.asset-preview {
+.ascii-asset-preview pre {
   font-size: xx-small;
+  letter-spacing: -0.2em;
+  line-height: 0.7em;
 }
 
 

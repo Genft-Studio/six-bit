@@ -191,6 +191,7 @@ function NftMinter() {
                             </>
                         )}
 
+
                         {!_.isNull(collectionData) && (
                             <>
                                 <h3 className="text-center">NFT Collection:</h3>
@@ -203,26 +204,27 @@ function NftMinter() {
                                 Difficulty Target: {collectionData.difficulty1Target.toString()}<br/>
                                 IPFS CID Root: <a href={ipfsGatewayUrl(collectionData.cidRoot)} target="_blank">{collectionData.cidRoot}</a><br />
 
-                                {!_.isNull(assetData) && (
-                                    <pre className="asset-preview">
-                                        {assetData.assets.map(asset => {
-                                            return (
-                                                <>
-                                                    {asset + "\n\n"}
-                                                </>
-                                            )
-                                        })}
-                                    </pre>
-                                )}
-
-
                                 <button>
                                     Search for NFTs
                                 </button>
                                 <br/>
 
-                                NFT Found!
+                                {!_.isNull(assetData) && (
+                                    <div className="ascii-asset-preview">
+                                        {assetData.assets.map((asset, index) => {
+                                            return (
+                                                <div key={index}>
+                                                    <pre>
+                                                        {asset}
+                                                    </pre>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )}
 
+
+                                NFT Found!
                                 <button onClick={()=>setMinted(true)} disabled={minted}>
                                     Mint NFT
                                 </button>
