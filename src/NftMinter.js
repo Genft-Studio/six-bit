@@ -6,7 +6,9 @@ import {Popover, OverlayTrigger} from 'react-bootstrap'
 import gashaponDetails from "./abis/Gashapon.json";
 import mine from "./mine-worker.mjs";
 import './glitch.css'
-import pixelArtParser from "./pixelImage";
+// import pixelArtParser from "./pixelImage";
+import generateImage from "./pixelImage";
+import pixelImage from "./pixelImage";
 
 // TODO: Keep ./abis/Gashapon.json up to date, copy from ../build/contracts/...
 
@@ -21,8 +23,6 @@ function NftMinter() {
     const [myMinters, setMyMinters] = useState([])
     const [gashaponContract, setGashaponContract] = useState(null)
     const [assetData, setAssetData] = useState(null)
-
-    const [testImage, setTestImage] = useState("")
 
     // TODO: Pull collection contract address from url if present, for easy linking
 
@@ -72,8 +72,7 @@ function NftMinter() {
         console.log('salt: $OWL')
         */
 
-
-
+        // TODO: This is just for testing image rendering:
         // const imageArray = assetData[0];
         // const imageTmp = pixelArtParser.generateImage(imageArray)
     }
@@ -128,23 +127,15 @@ function NftMinter() {
         }
 
         // Fetch assets from IPFS gateway
+        let json
         try {
             const assetUrl = ipfsGatewayUrl(data.cidRoot)
             console.log("Fetching assets from IPFS with gateway url: ", assetUrl)
             let response = await fetch(assetUrl);
             if (response.ok) { // if HTTP-status is 200-299 get the response body
-                let json = await response.json();
+                json = await response.json();
                 setAssetData(json)
                 console.log("assetData: ", json)
-
-                // TODO: DEBUGGING, remove the stuff below
-                console.log(pixelArtParser)
-                const p = new pixelArtParser()
-                console.log(p)
-                let parsedTmp = p.pixelDataToArray(json.assets[0])
-                console.log("parsedTmp", parsedTmp)
-
-
             } else {
                 console.log("HTTP-Error: " + response.status);
             }
@@ -236,8 +227,14 @@ function NftMinter() {
                                 </button>
                                 <br/>
 
-                                {!_.isEmpty(testImage) && (
-                                    <img src={testImage} alt="" />
+                                {!_.isNull(assetData) && !_.isEmpty(assetData.assets) && (
+                                    <>
+                                        {assetData.assets.map((assetString, index) => {
+                                            return (
+                                                <img src={generateImage(assetString, 2)} alt="" style={{border: "4px solid #eeeeee"}} />
+                                            )
+                                        })}
+                                    </>
                                 )}
 
                                 <h3 className="text-center">Next Mint Price: {ethers.utils.formatEther(collectionData.mintPrice)} ETH</h3>
@@ -249,15 +246,14 @@ function NftMinter() {
                                 IPFS CID Root: <a href={ipfsGatewayUrl(collectionData.cidRoot)} target="_blank">{collectionData.cidRoot}</a><br />
                                 Contract: <a href={"https://etherscan.io/address/" + collectionAddress} target="_blank">{collectionAddress}</a><br />
 
-
                                 {!_.isNull(assetData) && (
                                     <>
                                         <h2 className="text-center">Genome Data:</h2>
                                         <div className="ascii-asset-preview">
                                             {assetData.assets.map((asset, index) => {
                                                 return (
-                                                    <div key={index}>
-                                                        <pre className="glitch" datatext={asset}>
+                                                    <div key={index} style={{backgroundImage: "url(" + generateImage(asset, 6) + ")"}}>
+                                                        <pre className="XXXglitch" datatext={asset}>
                                                             {asset}
                                                         </pre>
                                                     </div>
@@ -266,7 +262,6 @@ function NftMinter() {
                                         </div>
                                     </>
                                 )}
-
 
                                 NFT Found!
                                 <button onClick={()=>setMinted(true)} disabled={minted}>

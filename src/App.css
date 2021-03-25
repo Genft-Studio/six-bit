@@ -207,32 +207,65 @@ input.address {
 
 .ascii-asset-preview div {
   display: inline-block;
-  padding: 0 10px 0 10px
+  padding: 0 0 0 0.11em;
+  background-size: cover;
+  /*background-position-x: center;*/
+  /*background-position-y: center;*/
+  background-repeat: no-repeat;
 }
 
 .ascii-asset-preview pre {
-  font-size: xx-small;
-  letter-spacing: -0.2em;
-  line-height: 0.7em;
+  font-size: 0.5em;
+  letter-spacing: -0.29em;
+  line-height: 0.55em;
 }
 
 .ascii-asset-preview {
+  line-height: 0;
   /*color: transparent;*/
   /*animation: genome-effect 2s linear infinite;*/
 }
 
 
 .ascii-asset-preview {
-  animation: color-change 4s infinite;
+  animation: color-change 6s infinite;
 }
+
+
+/* Animate genome with zoom in on hover */
+.ascii-asset-preview div {
+  -webkit-transition: transform 1s;
+  transition: transform 1.5s;
+}
+.ascii-asset-preview div:hover{
+  transform: scale(1.2);
+}
+
+.ascii-asset-preview pre {
+  -webkit-transition: transform 1s;
+  transition: transform 8s;
+}
+/*.ascii-asset-preview div:hover pre{*/
+.ascii-asset-preview div:hover pre{
+  transform: scale(2.0);
+  transition-delay: 0.25s;
+}
+
+
 
 @keyframes color-change {
   0% {
     color: greenyellow;
         /*background-color: linear-gradient(greenyellow, #FFF000);*/
   }
-  50% {
-    color: #FFF000;
+  33% {
+    /*color: darkolivegreen;*/
+    color: deeppink;
+    /*background-color: linear-gradient(#FFF000, greenyellow);*/
+  }
+  66% {
+    /*color: darkolivegreen;*/
+    color: grey;
     /*background-color: linear-gradient(#FFF000, greenyellow);*/
   }
   100% {
