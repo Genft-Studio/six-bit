@@ -5,6 +5,8 @@ import gashaponFactoryAbi from "./abis/GashaponFactory.json";
 import {Popover, OverlayTrigger} from 'react-bootstrap'
 import gashaponDetails from "./abis/Gashapon.json";
 import mine from "./mine-worker.mjs";
+import './glitch.css'
+import pixelArtParser from "./pixelImage";
 
 // TODO: Keep ./abis/Gashapon.json up to date, copy from ../build/contracts/...
 
@@ -19,6 +21,8 @@ function NftMinter() {
     const [myMinters, setMyMinters] = useState([])
     const [gashaponContract, setGashaponContract] = useState(null)
     const [assetData, setAssetData] = useState(null)
+
+    const [testImage, setTestImage] = useState("")
 
     // TODO: Pull collection contract address from url if present, for easy linking
 
@@ -55,6 +59,8 @@ function NftMinter() {
     }
 
     const handleSearch = async () => {
+        // TODO: Get this working, failing with "Buffer not defined" error
+        /*
         const testAddress = '0x534Eb19E729E955308e5A9c37c90d4128e0F450F'
         let result = mine('$OWL', 16, 32, testAddress)
         console.log('seed:', result.seed.toString('hex'))
@@ -64,7 +70,12 @@ function NftMinter() {
         console.log('difficulty bits:', 16)
         console.log('dna bits:', 32)
         console.log('salt: $OWL')
+        */
 
+
+
+        // const imageArray = assetData[0];
+        // const imageTmp = pixelArtParser.generateImage(imageArray)
     }
 
     useEffect(() => {
@@ -124,7 +135,16 @@ function NftMinter() {
             if (response.ok) { // if HTTP-status is 200-299 get the response body
                 let json = await response.json();
                 setAssetData(json)
-                console.log(json)
+                console.log("assetData: ", json)
+
+                // TODO: DEBUGGING, remove the stuff below
+                console.log(pixelArtParser)
+                const p = new pixelArtParser()
+                console.log(p)
+                let parsedTmp = p.pixelDataToArray(json.assets[0])
+                console.log("parsedTmp", parsedTmp)
+
+
             } else {
                 console.log("HTTP-Error: " + response.status);
             }
@@ -189,7 +209,7 @@ function NftMinter() {
                                         <select value={collectionAddress} onChange={e => {
                                             setCollectionAddress(e.target.value)
                                         }}>
-                                            <option></option>
+                                            <option>Select Collection:</option>
                                         {myMinters.map((minter, index) => {
                                             return (
                                                 <option value={minter.address} key={index}>
@@ -210,31 +230,41 @@ function NftMinter() {
                             <>
                                 <h3 className="text-center">NFT Collection:</h3>
                                 <h1 className="text-center">"{collectionData.name}"</h1>
-                                Symbol: <strong>{collectionData.symbol}</strong><br/>
+
+                                <button onClick={handleSearch}>
+                                    Search for {collectionData.symbol} NFTs
+                                </button>
+                                <br/>
+
+                                {!_.isEmpty(testImage) && (
+                                    <img src={testImage} alt="" />
+                                )}
+
+                                <h3 className="text-center">Next Mint Price: {ethers.utils.formatEther(collectionData.mintPrice)} ETH</h3>
+                                <strong>Symbol: <strong>{collectionData.symbol}</strong></strong><br/>
                                 Artist: {collectionData.artistAddress}<br />
-                                Next Mint Price: {ethers.utils.formatEther(collectionData.mintPrice)} ETH<br/>
                                 {/*Total Difficulty: {collectionData.totalDifficulty.toString()}<br/>*/}
                                 DNA Bit Length: {collectionData.dnaBitLength.toString()}<br />
                                 Difficulty Target: {collectionData.difficulty1Target.toString()}<br/>
                                 IPFS CID Root: <a href={ipfsGatewayUrl(collectionData.cidRoot)} target="_blank">{collectionData.cidRoot}</a><br />
+                                Contract: <a href={"https://etherscan.io/address/" + collectionAddress} target="_blank">{collectionAddress}</a><br />
 
-                                <button onClick={handleSearch}>
-                                    Search for NFTs
-                                </button>
-                                <br/>
 
                                 {!_.isNull(assetData) && (
-                                    <div className="ascii-asset-preview">
-                                        {assetData.assets.map((asset, index) => {
-                                            return (
-                                                <div key={index}>
-                                                    <pre>
-                                                        {asset}
-                                                    </pre>
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
+                                    <>
+                                        <h2 className="text-center">Genome Data:</h2>
+                                        <div className="ascii-asset-preview">
+                                            {assetData.assets.map((asset, index) => {
+                                                return (
+                                                    <div key={index}>
+                                                        <pre className="glitch" datatext={asset}>
+                                                            {asset}
+                                                        </pre>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </>
                                 )}
 
 

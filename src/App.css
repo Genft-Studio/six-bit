@@ -216,6 +216,45 @@ input.address {
   line-height: 0.7em;
 }
 
+.ascii-asset-preview {
+  /*color: transparent;*/
+  /*animation: genome-effect 2s linear infinite;*/
+}
+
+
+.ascii-asset-preview {
+  animation: color-change 4s infinite;
+}
+
+@keyframes color-change {
+  0% {
+    color: greenyellow;
+        /*background-color: linear-gradient(greenyellow, #FFF000);*/
+  }
+  50% {
+    color: #FFF000;
+    /*background-color: linear-gradient(#FFF000, greenyellow);*/
+  }
+  100% {
+    color: greenyellow;
+    /*background-color: linear-gradient(greenyellow, #FFF000);*/
+  }
+}
+
+
+/*@keyframes genome-effect {*/
+/*  0% {*/
+/*    background: linear-gradient(*/
+/*            #008000, #00FF00);*/
+/*    -webkit-background-clip: text;*/
+/*  }*/
+
+/*  100% {*/
+/*    background: linear-gradient(*/
+/*            #777777, #FFF000);*/
+/*    -webkit-background-clip: text;*/
+/*  }*/
+/*}*/
 
 /*** Some page style elements come from https://mooncatrescue.com/ ***/
 
