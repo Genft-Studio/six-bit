@@ -120,7 +120,8 @@ h1 {
 }
 
 .file-directory,
-.nft-minter-detail {
+.nft-minter-detail,
+.nft-viewer-detail {
   border: 4px solid #222222;
   padding: 5px 5px 40px 5px;
   font-family: 'pixelar', mono space, sans-serif;

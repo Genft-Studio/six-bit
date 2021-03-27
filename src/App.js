@@ -13,6 +13,7 @@ import {useState, useEffect, createContext} from "react";
 import _ from "lodash";
 import NftMaker from "./NftMaker";
 import NftMinter from "./NftMinter";
+import NftViewer from "./NftViewer";
 
 function App() {
     const [spaceUser, setSpaceUser] = useState({})
@@ -67,6 +68,9 @@ function App() {
                         <li>
                             <Link to="/nft-minter">NFT Minter</Link>
                         </li>
+                        <li>
+                            <Link to="nft-viewer">Viewer</Link>
+                        </li>
                     </ul>
                 </nav>
 
@@ -79,6 +83,9 @@ function App() {
                     </Route>
                     <Route path="/nft-minter">
                         <NftMinter />
+                    </Route>
+                    <Route path="/nft-viewer">
+                        <NftViewer />
                     </Route>
                     <Route path="/">
                         <Home />

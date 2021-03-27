@@ -127,15 +127,15 @@ function NftMinter() {
         }
 
         // Fetch assets from IPFS gateway
-        let json
+        let jsonData
         try {
             const assetUrl = ipfsGatewayUrl(data.cidRoot)
             console.log("Fetching assets from IPFS with gateway url: ", assetUrl)
             let response = await fetch(assetUrl);
             if (response.ok) { // if HTTP-status is 200-299 get the response body
-                json = await response.json();
-                setAssetData(json)
-                console.log("assetData: ", json)
+                jsonData = await response.json();
+                setAssetData(jsonData)
+                console.log("assetData: ", jsonData)
             } else {
                 console.log("HTTP-Error: " + response.status);
             }
