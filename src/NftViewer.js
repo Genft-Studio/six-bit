@@ -2,17 +2,19 @@ import {useEffect, useState} from "react";
 import _ from "lodash";
 import {ethers} from "ethers";
 import gashaponDetails from "./abis/Gashapon.json";
-import generateImage from "./pixelImage";
+// import generateImage from "./pixelImage";
+import {gashaponParser, gashaponImage} from "./pixelImage";
 
 function NftViewer() {
     const [collectionAddress, setCollectionAddress] = useState("")
-    const [id, setId] = useState("")
+    const [dna, setDna] = useState("")
     const [gashaponContract, setGashaponContract] = useState(null)
     const [collectionCid, setCollectionCid] = useState(null)
     const [collectionData, setCollectionData] = useState(null)
-    const [assetData, setAssetData] = useState(null)
+    const [genome, setGenome] = useState(null)
     const [provider, setProvider] = useState(null)
     const [signer, setSigner] = useState(null)
+    const [imageData, setImageData] = useState(null)
 
     // TODO: Load contract address from the factory contract using it's child index
 
@@ -80,20 +82,46 @@ function NftViewer() {
         let jsonData
         try {
             const assetUrl = ipfsGatewayUrl(data.cidRoot)
-            console.log("Fetching assets from IPFS with gateway url: ", assetUrl)
+            console.log("Fetching genome from IPFS with gateway url: ", assetUrl)
             let response = await fetch(assetUrl);
             if (response.ok) { // if HTTP-status is 200-299 get the response body
                 jsonData = await response.json();
-                setAssetData(jsonData)
-                console.log("assetData: ", jsonData)
+                setGenome(jsonData)
+                console.log("genome: ", jsonData)
             } else {
                 console.log("HTTP-Error: " + response.status);
             }
         } catch (e) {
-            console.log("ERROR: Fetching data from IPFS gateway: ", e.toString())
+            console.log("ERROR: Fetching genome from IPFS gateway: ", e.toString())
             return
         }
     }
+
+    const getRandomInt = (max) => {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    useEffect(() => {
+        try {
+            /*
+            const processedDna = gashaponParser(dna, genome)
+            console.log("processedDna: ", processedDna)
+            // TODO: Probably generateImage
+            const imageDataResult = generateImage(processedDna, 10, 0)
+            console.log("imageData: ", imageDataResult)
+            setImageData(imageDataResult)
+             */
+
+            const gashapon = gashaponParser(dna, genome)
+
+            console.log("gashaponParser result: ", gashapon)
+
+
+        } catch (e) {
+            console.log("ERROR: Running gashaponParser: ", e.toString())
+            setImageData(null)
+        }
+    }, [dna])
 
     useEffect(() => {
         if(!ethers.utils.isAddress(collectionAddress)) {
@@ -109,6 +137,24 @@ function NftViewer() {
         }
     }, [collectionAddress])
 
+    // For testing purposes
+    const randomDna = () => {
+        // 5 Byte DNA
+        const bytes = 5
+        const max = 256 ** bytes
+        const randomInt = getRandomInt(max)
+        const hexString = _.padStart(randomInt.toString(16), bytes * 2, 0)
+        setDna("0x" + hexString)
+
+    }
+
+    const handleRandomDna = () => {
+        randomDna()
+    }
+
+    useEffect(() => {
+        randomDna()
+    }, [])
 
     return (
         <div className="App nft-minter">
@@ -131,17 +177,24 @@ function NftViewer() {
                     {!_.isNull(collectionData) && (
                         <>
                             <h1 className="text-center">Collection: {collectionData.name} {collectionData.symbol}</h1>
-                            Asset ID:
-                            <input value={id} onChange={e => setId(e.target.value)} /><br />
-                            {!_.isNull(assetData) && (
+                            DNA:
+                            <input value={dna} onChange={e => setDna(e.target.value)} />
+                            <button onClick={handleRandomDna}>
+                                Random
+                            </button>
+                            <br />
+                            {!_.isNull(genome) && (
                                 <>
                                     {/* TODO: Only display single generated image, this display of many images is just for testing */}
-                                    <img src={generateImage(assetData.assets[0], 10, 0)} alt="" style={{border: "4px solid #eeeeee"}} />
-
-                                    <img src={generateImage(assetData.assets[0], 10, 1)} alt="" style={{border: "4px solid #eeeeee"}} />
-                                    <img src={generateImage(assetData.assets[0], 10, 2)} alt="" style={{border: "4px solid #eeeeee"}} />
-                                    <img src={generateImage(assetData.assets[0], 10, 3)} alt="" style={{border: "4px solid #eeeeee"}} />
+                                    {/*<img src={generateImage(genome.assets[0], 10, 0)} alt="" style={{border: "4px solid #eeeeee"}} />*/}
+                                    {/*<img src={generateImage(genome.assets[0], 10, 1)} alt="" style={{border: "4px solid #eeeeee"}} />*/}
+                                    {/*<img src={generateImage(genome.assets[0], 10, 2)} alt="" style={{border: "4px solid #eeeeee"}} />*/}
+                                    {/*<img src={generateImage(genome.assets[0], 10, 3)} alt="" style={{border: "4px solid #eeeeee"}} />*/}
+                                    <img src={gashaponImage(gashaponParser(dna, genome))} alt="" style={{border: "4px solid #ffdddd"}} />
                                 </>
+                            )}
+                            {!_.isNull(imageData) && (
+                                <img src={imageData} alt="" style={{border: "4px solid #eeeeee"}} />
                             )}
                         </>
                     )}

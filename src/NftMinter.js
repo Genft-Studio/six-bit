@@ -227,15 +227,18 @@ function NftMinter() {
                                 </button>
                                 <br/>
 
+                                {/*
                                 {!_.isNull(assetData) && !_.isEmpty(assetData.assets) && (
                                     <>
                                         {assetData.assets.map((assetString, index) => {
                                             return (
-                                                <img src={generateImage(assetString, 2)} alt="" style={{border: "4px solid #eeeeee"}} />
+                                                // <img src={generateImage(assetString, 2)} alt="" style={{border: "4px solid #eeeeee"}} />
+                                                // <p>{assetString}</p>
                                             )
                                         })}
-                                    </>
+                                    </span>
                                 )}
+                                */}
 
                                 <h3 className="text-center">Next Mint Price: {ethers.utils.formatEther(collectionData.mintPrice)} ETH</h3>
                                 <strong>Symbol: <strong>{collectionData.symbol}</strong></strong><br/>
@@ -252,7 +255,9 @@ function NftMinter() {
                                         <div className="ascii-asset-preview">
                                             {assetData.assets.map((asset, index) => {
                                                 return (
-                                                    <div key={index} style={{backgroundImage: "url(" + generateImage(asset, 6) + ")"}}>
+                                                    // <div key={index} style={{backgroundImage: "url(" + generateImage(asset, 6) + ")"}}>
+                                                    // <div key={index} style={{backgroundImage: "url(" + generateImage(asset, 6) + ")"}}>
+                                                    <div key={index} >
                                                         <pre className="XXXglitch" datatext={asset}>
                                                             {asset}
                                                         </pre>
